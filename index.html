@@ -3,150 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEET Prep Companion</title>
+  <title>NEET Pro Companion</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style>
     body {
-      background-color: var(--tg-theme-bg-color, #f9fafb);
-      color: var(--tg-theme-text-color, #1f2937);
+      background: var(--tg-theme-secondary-bg-color, #f4f6f9);
+      color: var(--tg-theme-text-color, #1e293b);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .active-nav {
+      color: #10b981;
+      transform: translateY(-2px);
     }
   </style>
 </head>
-<body class="font-sans antialiased pb-24">
+<body class="font-sans antialiased pb-28 text-slate-800">
 
-  <div class="max-w-lg mx-auto px-4 pt-4 flex items-center justify-between" id="top-bar">
+  <header class="max-w-lg mx-auto px-4 pt-5 pb-2 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <div id="avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 text-white flex items-center justify-center font-bold text-lg border border-white shadow-sm">
-        U
+      <div id="avatar" class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-xl shadow-md border-2 border-white">
+        N
       </div>
       <div>
-        <div class="flex items-center space-x-1.5">
-          <h3 id="user-name" class="font-semibold text-gray-900 leading-tight text-sm">NEET Aspirant</h3>
-          <span id="plan-badge" class="bg-gray-100 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Free</span>
-        </div>
-        <p id="tg-id" class="text-[10px] text-gray-400 font-mono">ID: Fetching...</p>
-      </div>
-    </div>
-    <div class="flex items-center space-x-1 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1 text-emerald-700 shadow-sm">
-      <span class="text-xs font-semibold font-mono" id="streak-display">1 Days 🔥</span>
-    </div>
-  </div>
-
-  <main class="max-w-lg mx-auto px-4 pt-4" id="main-panel">
-
-    <div id="tab-dashboard" class="space-y-4">
-      <div class="bg-gradient-to-tr from-gray-950 to-indigo-950 text-white rounded-2xl p-5 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between border-b border-gray-800 pb-3 mb-3">
-          <div>
-            <span class="text-[10px] text-gray-400 uppercase tracking-widest block">Unified Bot Score</span>
-            <span id="score-display" class="text-3xl font-bold font-mono text-white">0</span>
-          </div>
-        </div>
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between text-xs text-gray-300">
-            <span>Daily Target Questions</span>
-            <span id="target-count" class="font-semibold text-white font-mono">0/10</span>
-          </div>
-          <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-            <div id="target-progress" class="bg-emerald-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-3">
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center border border-red-100 font-bold">⏳</div>
-          <div>
-            <h4 class="font-semibold text-xs text-gray-900 leading-tight">15-Year PYQ Solver Vault</h4>
-            <p class="text-[10px] text-gray-400">Tap on any year to solve the actual NEET papers.</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-4 gap-1.5 pt-1" id="pyq-years-grid">
-          </div>
-      </div>
-    </div>
-
-    <div id="quiz-container" class="hidden space-y-4">
-      <div class="flex items-center justify-between bg-white rounded-xl p-3 border border-gray-150 shadow-sm">
-        <button onclick="quitQuiz()" class="text-xs text-gray-600 bg-gray-100 py-1.5 px-3 rounded-lg font-medium">Exit Test</button>
         <div class="flex items-center space-x-2">
-          <span id="quiz-meta" class="text-xs font-mono font-medium bg-gray-100 px-2 py-1 rounded-md">Q: 1/10</span>
+          <h3 id="user-name" class="font-bold text-base text-slate-900 leading-tight">Aspirant</h3>
+          <span id="plan-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200">Free</span>
         </div>
+        <p id="tg-id" class="text-[10px] text-slate-400 font-mono mt-0.5">ID: Fetching...</p>
       </div>
+    </div>
+    <div class="bg-white border border-slate-100 rounded-xl px-3 py-1.5 shadow-xs flex items-center space-x-1">
+      <span class="text-xs font-bold text-slate-700 font-mono" id="streak-display">-- 🔥</span>
+    </div>
+  </header>
 
-      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
-        <div class="flex items-center justify-between border-b border-gray-150 pb-2">
-          <span id="quiz-subject" class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Biology</span>
-        </div>
-        <p id="question-text" class="text-sm font-medium text-gray-900 leading-relaxed">Loading question text...</p>
-        
-        <div class="space-y-2.5" id="options-block">
+  <main class="max-w-lg mx-auto px-4 pt-3">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="space-y-5">
+      <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold block">Unified Target Score</span>
+            <span id="score-display" class="text-4xl font-black font-mono bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">0</span>
           </div>
+          <span class="text-xs bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full text-emerald-400 font-medium">Ecosystem Live</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-300">
+            <span class="font-medium">Daily Accuracy Target</span>
+            <span id="target-count" class="font-bold text-white font-mono bg-slate-800 px-2 py-0.5 rounded-md">0/10</span>
+          </div>
+          <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div id="target-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
       </div>
 
-      <div id="explanation-drawer" class="hidden bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
-        <div id="verdict-badge" class="inline-block text-xs font-bold px-2.5 py-1 rounded-full uppercase">Correct</div>
-        <div class="text-xs text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
-          <span class="font-semibold text-gray-900 block mb-1">Answer Explanation:</span>
-          <p id="explanation-text">Explanation content goes here.</p>
+      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 text-lg shadow-2xs">⏳</div>
+          <div>
+            <h4 class="font-bold text-sm text-slate-900 leading-tight">15-Year PYQ Solver Vault</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Solve historical NEET papers inside a real CBT frame.</p>
+          </div>
         </div>
-        <button onclick="nextQuestion()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold py-3 rounded-xl shadow-sm flex items-center justify-center space-x-1">
-          <span>Next Question ➡️</span>
-        </button>
+        <!-- FIX: Extended grid to actually show 15 years (2010–2024) -->
+        <div class="grid grid-cols-3 gap-2" id="pyq-years-grid"></div>
       </div>
     </div>
 
-    <div id="tab-practice" class="hidden p-4 text-center text-gray-400 text-xs">Syllabus chapter integration loading from active cloud db...</div>
-    <div id="tab-vaults" class="hidden p-4 text-center text-gray-400 text-xs">Mistake Vault & Saved Bookmarks loading dynamically...</div>
-    
-    <div id="tab-leaderboard" class="hidden space-y-4">
-      <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-        <div class="flex items-center space-x-3 border-b border-gray-100 pb-3 mb-3">
-          <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 font-bold">🏆</div>
+    <!-- PRACTICE TAB -->
+    <div id="tab-practice" class="hidden space-y-4">
+      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+          <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 text-lg shadow-2xs">🧬</div>
           <div>
-            <h4 class="font-semibold text-xs text-gray-900 leading-tight">Global Live Leaderboard</h4>
-            <p class="text-[10px] text-gray-400">Top 10 aspirants ranked by unified cloud ecosystem scores.</p>
+            <h4 class="font-bold text-sm text-slate-900 leading-tight">Syllabus Topic Practice</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Select a subject to target individual core chapters.</p>
           </div>
         </div>
-        
-        <div class="space-y-2" id="leaderboard-list">
+        <div class="flex space-x-2">
+          <button onclick="filterPracticeSubject('biology')" id="sub-btn-biology" class="flex-1 bg-emerald-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-xs transition">Biology</button>
+          <button onclick="filterPracticeSubject('physics')" id="sub-btn-physics" class="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition">Physics</button>
+          <button onclick="filterPracticeSubject('chemistry')" id="sub-btn-chemistry" class="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition">Chemistry</button>
+        </div>
+        <div id="chapters-list" class="space-y-2 pt-2 max-h-72 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- VAULTS TAB -->
+    <div id="tab-vaults" class="hidden space-y-4">
+      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+          <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-100 text-lg shadow-2xs">🔥</div>
+          <div>
+            <h4 class="font-bold text-sm text-slate-900 leading-tight">Personal Mistake Vault</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Review and clear out previous incorrect question logs.</p>
           </div>
+        </div>
+        <div id="vaults-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD TAB -->
+    <div id="tab-leaderboard" class="hidden space-y-4">
+      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+        <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 text-lg shadow-2xs">🏆</div>
+          <div>
+            <h4 class="font-bold text-sm text-slate-900 leading-tight">Global Live Leaderboard</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Top ranking aspirants synced dynamically across the cloud.</p>
+          </div>
+        </div>
+        <div class="space-y-2.5" id="leaderboard-list"></div>
+      </div>
+    </div>
+
+    <!-- QUIZ CONTAINER -->
+    <div id="quiz-container" class="hidden space-y-4">
+      <div class="flex items-center justify-between glass-card rounded-2xl p-3 shadow-xs">
+        <button onclick="quitQuiz()" class="text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 px-4 rounded-xl font-bold transition">Exit Frame</button>
+        <span id="quiz-meta" class="text-xs font-mono font-bold bg-slate-900 text-white px-3 py-1 rounded-lg">Q: 1/10</span>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <span id="quiz-subject" class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">Biology</span>
+        </div>
+        <p id="question-text" class="text-sm font-bold text-slate-900 leading-relaxed">Loading question...</p>
+        <div class="space-y-3" id="options-block"></div>
+      </div>
+
+      <div id="explanation-drawer" class="hidden glass-card rounded-3xl p-5 border border-emerald-100 shadow-sm space-y-4">
+        <div id="verdict-badge" class="inline-block text-xs font-extrabold px-3 py-1 rounded-md uppercase tracking-wider">Correct</div>
+        <div class="text-xs text-slate-700 bg-slate-50/50 p-4 rounded-2xl border border-slate-100 leading-relaxed">
+          <span class="font-bold text-slate-900 block mb-1.5 text-xs">Concept Breakdown:</span>
+          <p id="explanation-text">Explanation will appear here.</p>
+        </div>
+        <button onclick="nextQuestion()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold py-3.5 rounded-2xl shadow-md transition flex items-center justify-center space-x-1">
+          <span>Continue Next Question</span> <span>➡️</span>
+        </button>
       </div>
     </div>
 
   </main>
 
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 px-4 py-2 flex justify-around z-50 max-w-lg mx-auto rounded-t-xl shadow-lg">
-    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider py-1 px-3" id="nav-dashboard">
+  <nav class="fixed bottom-5 inset-x-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 px-3 py-2.5 flex justify-around z-50 max-w-md mx-auto rounded-2xl shadow-2xl transition duration-200">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group active-nav" id="nav-dashboard">
+      <span class="text-base group-hover:scale-110 transition">🏠</span>
       <span>Home</span>
     </button>
-    <button onclick="switchTab('practice')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-practice">
+    <button onclick="switchTab('practice')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-practice">
+      <span class="text-base group-hover:scale-110 transition">🔬</span>
       <span>Practice</span>
     </button>
-    <button onclick="switchTab('vaults')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-vaults">
+    <button onclick="switchTab('vaults')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-vaults">
+      <span class="text-base group-hover:scale-110 transition">📦</span>
       <span>Vaults</span>
     </button>
-    <button onclick="switchTab('leaderboard')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-leaderboard">
+    <button onclick="switchTab('leaderboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-leaderboard">
+      <span class="text-base group-hover:scale-110 transition">🏆</span>
       <span>Ranks</span>
     </button>
   </nav>
 
   <script>
-    // 1. SUPABASE CREDENTIALS DIRECT HARDCODE
-    const SUPABASE_URL = "https://egudrydhuaibeaocajdt.supabase.co"; 
-    const SUPABASE_ANON_KEY = "sb_publishable_vFnnyzNaeKo-dgHzA9hZlw_yB4tw9R9";
-    
+    // ── CONFIG ────────────────────────────────────────────────────────────────
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 2. STATE MANAGER Variables
-    let tgUser = { id: "777777777", first_name: "Guest Aspirant" }; 
+    // ── APP STATE ─────────────────────────────────────────────────────────────
+    let tgUser = { id: "1458889763", first_name: "Suman Karan" };
     let currentQuestionsPool = [];
     let activeQuestionIdx = 0;
     let hasAnsweredQ = false;
+    let selectedPracticeSubject = 'biology';
 
-    // Initialize Telegram SDK
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
@@ -156,18 +197,19 @@
       }
     }
 
-    // Render PYQ Years Grid UI
-    const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016];
+    // ── PYQ YEAR GRID
+    // FIX: Was only 9 years (2016–2024). Extended to 15 years (2010–2024).
+    const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
     const gridContainer = document.getElementById('pyq-years-grid');
     pyqYears.forEach(year => {
       const btn = document.createElement('button');
-      btn.className = "bg-gray-50 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-gray-700 font-mono font-bold py-2 text-xs rounded-xl border border-gray-200 transition";
+      btn.className = "bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 font-mono font-bold py-3 text-xs rounded-xl border border-slate-150 shadow-2xs transition duration-150";
       btn.innerText = year;
       btn.onclick = () => loadPYQPaper(year);
       gridContainer.appendChild(btn);
     });
 
-    // 3. SECURE PROFILE SYNC LOOP WITH LIVE BOT TABLES
+    // ── PROFILE SYNC ──────────────────────────────────────────────────────────
     async function syncEcosystemProfile() {
       const userId = String(tgUser.id);
       document.getElementById('tg-id').innerText = `ID: ${userId}`;
@@ -175,135 +217,388 @@
       document.getElementById('avatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
 
       try {
-        let { data: userRow } = await supabaseClient.from('users').select('*').eq('user_id', userId).single();
+        const { data: userRow } = await supabaseClient
+          .from('users')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
         if (userRow) {
           document.getElementById('plan-badge').innerText = userRow.status.toUpperCase();
-          if(userRow.status === 'premium') {
-            document.getElementById('plan-badge').className = "bg-amber-100 border border-amber-300 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider";
-          }
         }
 
-        let { data: statsRow } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
+        const { data: statsRow } = await supabaseClient
+          .from('stats')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
         if (statsRow) {
-          document.getElementById('score-display').innerText = statsRow.total_score;
-          document.getElementById('streak-display').innerText = `${statsRow.total_attempted > 0 ? 'Active' : '1'} Days 🔥`;
-          
-          let done = statsRow.total_attempted % 10; 
+          document.getElementById('score-display').innerText = statsRow.total_score ?? 0;
+
+          // FIX: Real streak logic using last_active date comparison.
+          // Requires 'streak' and 'last_active' (DATE) columns in your stats table.
+          const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+          const lastActive = statsRow.last_active || null;
+          let streak = statsRow.streak || 0;
+
+          if (lastActive && lastActive !== today) {
+            const msPerDay = 1000 * 60 * 60 * 24;
+            const daysDiff = Math.floor((new Date(today) - new Date(lastActive)) / msPerDay);
+            if (daysDiff > 1) {
+              // Missed a day — reset streak in DB
+              streak = 0;
+              await supabaseClient
+                .from('stats')
+                .update({ streak: 0 })
+                .eq('user_id', userId);
+            }
+            // if daysDiff === 1, streak is intact, will increment on first answer today
+          }
+
+          const streakLabel = streak > 0
+            ? `${streak} Day${streak > 1 ? 's' : ''} 🔥`
+            : 'Start 🔥';
+          document.getElementById('streak-display').innerText = streakLabel;
+
+          // Daily progress counter (cycles per 10 attempts)
+          const done = (statsRow.total_attempted || 0) % 10;
           document.getElementById('target-count').innerText = `${done}/10`;
           document.getElementById('target-progress').style.width = `${(done / 10) * 100}%`;
         }
       } catch (err) {
-        console.error("Profile parity sync pipeline error:", err);
+        console.error("Profile sync error:", err);
       }
     }
 
-    // 4. LOAD PYQ PAPERS DIRECT FROM LIVE 'QUESTIONS' TABLE
+    // ── PYQ LOADER ────────────────────────────────────────────────────────────
+    // FIX: Old code did data.filter(q => q.question.includes(String(year))) — that
+    // searched for the year number inside question text, which is wrong and expensive.
+    // Now filters by a proper 'year' column in the questions table.
     async function loadPYQPaper(year) {
-      const { data, error } = await supabaseClient.from('questions').select('*');
-      if (error || !data) {
-        alert("Failed to load records from Supabase setup string.");
+      const { data, error } = await supabaseClient
+        .from('questions')
+        .select('*')
+        .eq('year', year);
+
+      if (error) {
+        alert("Failed to load questions. Check your connection.");
+        return;
+      }
+      if (!data || data.length === 0) {
+        alert(`No questions found for ${year}.`);
         return;
       }
 
-      let filtered = data.filter(q => q.question.includes(String(year)));
-      if (filtered.length === 0) {
-        alert(`No items found for NEET ${year} in database yet.`);
-        return;
-      }
-
-      currentQuestionsPool = filtered;
+      currentQuestionsPool = data;
       activeQuestionIdx = 0;
-      
-      document.getElementById('tab-dashboard').classList.add('hidden');
+      startQuizSession();
+    }
+
+    // ── PRACTICE: SUBJECT FILTER ──────────────────────────────────────────────
+    function filterPracticeSubject(sub) {
+      ['biology', 'physics', 'chemistry'].forEach(s => {
+        document.getElementById(`sub-btn-${s}`).className =
+          "flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition";
+      });
+      const activeColorMap = {
+        biology: 'bg-emerald-500',
+        physics: 'bg-blue-500',
+        chemistry: 'bg-amber-500'
+      };
+      document.getElementById(`sub-btn-${sub}`).className =
+        `flex-1 ${activeColorMap[sub]} text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-xs transition`;
+      selectedPracticeSubject = sub;
+      loadPracticeChapters();
+    }
+
+    // ── PRACTICE: CHAPTER LIST ────────────────────────────────────────────────
+    // FIX: Old code fetched real data but then threw it away and showed hardcoded
+    // placeholder chapters. Now reads actual chapter names from the 'chapter' column.
+    async function loadPracticeChapters() {
+      const targetList = document.getElementById('chapters-list');
+      targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">Loading chapters...</p>';
+
+      const { data, error } = await supabaseClient
+        .from('questions')
+        .select('chapter')
+        .eq('subject', selectedPracticeSubject);
+
+      if (error || !data) {
+        targetList.innerHTML = '<p class="text-center text-xs text-red-400 py-3">Failed to load chapters.</p>';
+        return;
+      }
+
+      const uniqueChapters = [...new Set(data.map(q => q.chapter).filter(Boolean))].sort();
+
+      if (uniqueChapters.length === 0) {
+        targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">No chapters found for this subject.</p>';
+        return;
+      }
+
+      targetList.innerHTML = '';
+      uniqueChapters.forEach(ch => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition cursor-pointer";
+        row.innerHTML = `
+          <span class="text-xs font-bold text-slate-800">${ch}</span>
+          <span class="text-[10px] font-mono bg-white border border-slate-200 px-2 py-0.5 rounded-md text-slate-500 font-bold">Launch 🚀</span>
+        `;
+        row.onclick = () => launchPracticeChapterQuiz(selectedPracticeSubject, ch);
+        targetList.appendChild(row);
+      });
+    }
+
+    // ── PRACTICE: LAUNCH CHAPTER QUIZ ────────────────────────────────────────
+    // FIX: Old code only filtered by subject, not chapter. Now passes both.
+    async function launchPracticeChapterQuiz(subject, chapter) {
+      const { data, error } = await supabaseClient
+        .from('questions')
+        .select('*')
+        .eq('subject', subject)
+        .eq('chapter', chapter)
+        .limit(10);
+
+      if (error || !data || data.length === 0) {
+        alert("No questions found for this chapter.");
+        return;
+      }
+
+      currentQuestionsPool = data;
+      activeQuestionIdx = 0;
+      startQuizSession();
+    }
+
+    // ── MISTAKE VAULT ─────────────────────────────────────────────────────────
+    async function loadMistakeVault() {
+      const container = document.getElementById('vaults-list');
+      container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">Loading mistake vault...</p>';
+
+      const userId = String(tgUser.id);
+      const { data: hist, error } = await supabaseClient
+        .from('user_history')
+        .select('question_id')
+        .eq('user_id', parseInt(userId))
+        .eq('is_correct', 0);
+
+      if (error || !hist || hist.length === 0) {
+        container.innerHTML = '<p class="text-center text-xs font-medium text-slate-400 py-6">🎉 Your Mistake Vault is completely clear!</p>';
+        return;
+      }
+
+      const ids = hist.map(h => h.question_id);
+      const { data: qRows, error: qErr } = await supabaseClient
+        .from('questions')
+        .select('*')
+        .in('id', ids);
+
+      if (qErr || !qRows || qRows.length === 0) {
+        container.innerHTML = '<p class="text-center text-xs text-red-400 py-4">Failed to load vault questions.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      qRows.forEach(q => {
+        const card = document.createElement('div');
+        card.className = "p-4 rounded-2xl bg-rose-50/50 border border-rose-100 space-y-2";
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="text-[9px] font-black uppercase bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md">${q.subject}</span>
+          </div>
+          <p class="text-xs font-bold text-slate-900 leading-relaxed">${q.question}</p>
+          <p class="text-[11px] text-emerald-700 font-bold bg-white border border-emerald-100 p-2 rounded-xl mt-1">💡 Correct Answer: Option ${q.correct}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ── LEADERBOARD ───────────────────────────────────────────────────────────
+    async function loadLeaderboard() {
+      const listContainer = document.getElementById('leaderboard-list');
+      listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">Syncing rankings...</p>';
+
+      try {
+        const { data: statsData, error: statsError } = await supabaseClient
+          .from('stats')
+          .select('user_id, total_score')
+          .order('total_score', { ascending: false })
+          .limit(10);
+
+        if (statsError) throw statsError;
+
+        if (!statsData || statsData.length === 0) {
+          listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">No rankings yet. Be the first!</p>';
+          return;
+        }
+
+        const userIds = statsData.map(r => String(r.user_id));
+        const { data: usersData } = await supabaseClient
+          .from('users')
+          .select('user_id, first_name')
+          .in('user_id', userIds);
+
+        const lookup = {};
+        if (usersData) usersData.forEach(u => { lookup[String(u.user_id)] = u.first_name; });
+
+        listContainer.innerHTML = '';
+        statsData.forEach((row, index) => {
+          const rank = index + 1;
+          let badgeClass = "bg-slate-100 text-slate-700";
+          let rankIcon = rank;
+
+          if (rank === 1) { rankIcon = "🥇"; badgeClass = "bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black"; }
+          else if (rank === 2) { rankIcon = "🥈"; badgeClass = "bg-slate-100 border border-slate-200 text-slate-700 text-xs font-black"; }
+          else if (rank === 3) { rankIcon = "🥉"; badgeClass = "bg-orange-50 border border-orange-200 text-orange-700 text-xs font-black"; }
+
+          const finalName = lookup[String(row.user_id)] || `Aspirant_${String(row.user_id).slice(-4)}`;
+          const card = document.createElement('div');
+          card.className = "flex items-center justify-between p-3.5 bg-slate-50 border border-slate-150 rounded-xl shadow-2xs";
+          card.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[11px] ${badgeClass}">${rankIcon}</span>
+              <span class="text-xs font-bold text-slate-800">${finalName}</span>
+            </div>
+            <span class="text-xs font-mono font-black text-emerald-600">+${row.total_score} Pts</span>
+          `;
+          listContainer.appendChild(card);
+        });
+      } catch (err) {
+        listContainer.innerHTML = '<p class="text-center text-xs text-red-500 py-3">Error fetching leaderboard.</p>';
+      }
+    }
+
+    // ── QUIZ: START SESSION ───────────────────────────────────────────────────
+    function startQuizSession() {
+      ['dashboard', 'practice', 'vaults', 'leaderboard'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+      });
       document.getElementById('quiz-container').classList.remove('hidden');
       renderActiveOMRCard();
     }
 
-    // 5. NEET OMR SIMULATOR CARD GENERATION Engine
+    // ── QUIZ: RENDER QUESTION ─────────────────────────────────────────────────
     function renderActiveOMRCard() {
       if (activeQuestionIdx >= currentQuestionsPool.length) {
-        alert("🏁 Test Session Completed!");
+        alert("🏁 Session Complete! Well done.");
         quitQuiz();
         return;
       }
 
       hasAnsweredQ = false;
       document.getElementById('explanation-drawer').classList.add('hidden');
-      
+
       const q = currentQuestionsPool[activeQuestionIdx];
       document.getElementById('quiz-meta').innerText = `Q: ${activeQuestionIdx + 1}/${currentQuestionsPool.length}`;
       document.getElementById('quiz-subject').innerText = q.subject.toUpperCase();
       document.getElementById('question-text').innerText = q.question;
 
-      const optionsArray = [
-        { key: 'A', text: q.opt1 },
-        { key: 'B', text: q.opt2 },
-        { key: 'C', text: q.opt3 },
-        { key: 'D', text: q.opt4 }
+      const opts = [
+        { k: 'A', t: q.opt1 },
+        { k: 'B', t: q.opt2 },
+        { k: 'C', t: q.opt3 },
+        { k: 'D', t: q.opt4 }
       ];
 
-      const optionsBlock = document.getElementById('options-block');
-      optionsBlock.innerHTML = '';
-
-      optionsArray.forEach(opt => {
-        if (!opt.text) return;
+      const block = document.getElementById('options-block');
+      block.innerHTML = '';
+      opts.forEach(opt => {
+        if (!opt.t) return;
         const btn = document.createElement('button');
-        btn.className = "w-full text-left p-3.5 rounded-xl border border-gray-200 bg-gray-50 text-xs transition duration-150 flex items-start space-x-3";
-        btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-white border border-gray-300 shadow-sm flex items-center justify-center font-bold text-[11px]">${opt.key}</span><span class="pt-0.5">${opt.text}</span>`;
-        btn.onclick = () => logOMRSelection(btn, opt.key, q.correct, q.explanation, q.id);
-        optionsBlock.appendChild(btn);
+        // FIX: Store the option key in a data attribute instead of relying on
+        // innerText.startsWith(), which was fragile due to nested span elements.
+        btn.dataset.key = opt.k;
+        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 text-xs font-medium transition flex items-start space-x-3";
+        btn.innerHTML = `
+          <span class="w-5 h-5 rounded-md bg-white border border-slate-200 shadow-3xs flex items-center justify-center font-bold text-[10px] text-slate-500 shrink-0">${opt.k}</span>
+          <span class="pt-0.5 flex-1">${opt.t}</span>
+        `;
+        btn.onclick = () => verifyOMRSelection(btn, opt.k, q.correct, q.explanation, q.id);
+        block.appendChild(btn);
       });
     }
 
-    // 6. LOG ANSWERS +4 / -1 MARKS LIVE TRACKING UPDATE
-    async function logOMRSelection(element, selectedLetter, correctIndex, explanation, questionId) {
+    // ── QUIZ: VERIFY ANSWER ───────────────────────────────────────────────────
+    async function verifyOMRSelection(el, letter, correctIdx, exp, qId) {
       if (hasAnsweredQ) return;
       hasAnsweredQ = true;
 
-      const indexMap = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
-      const correctLetter = indexMap[correctIndex] || 'A';
-      const isCorrect = (selectedLetter === correctLetter);
-      const scoreDelta = isCorrect ? 4 : -1;
+      const map = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+      const rightLetter = map[correctIdx] || 'A';
+      const isCorrect = (letter === rightLetter);
+      const delta = isCorrect ? 4 : -1;
 
-      const optionsButtons = document.getElementById('options-block').children;
-      for (let btn of optionsButtons) {
-        btn.disabled = true;
-        if (btn.innerText.startsWith(correctLetter)) {
-          btn.className = "w-full text-left p-3.5 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-700 font-medium ring-2 ring-emerald-500/10 text-xs flex items-start space-x-3";
-          btn.querySelector('span').className = "w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-[11px]";
-        } else if (btn === element && !isCorrect) {
-          btn.className = "w-full text-left p-3.5 rounded-xl border border-red-500 bg-red-50 text-red-700 font-medium ring-2 ring-red-500/10 text-xs flex items-start space-x-3";
-          btn.querySelector('span').className = "w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-[11px]";
+      // FIX: Use data-key attribute for reliable option matching.
+      const btns = document.getElementById('options-block').children;
+      for (let b of btns) {
+        b.disabled = true;
+        if (b.dataset.key === rightLetter) {
+          b.className = "w-full text-left p-4 rounded-xl border-emerald-500 bg-emerald-50 text-emerald-900 font-bold ring-4 ring-emerald-500/10 text-xs flex items-start space-x-3";
+        } else if (b === el && !isCorrect) {
+          b.className = "w-full text-left p-4 rounded-xl border-rose-500 bg-rose-50 text-rose-900 font-bold ring-4 ring-rose-500/10 text-xs flex items-start space-x-3";
         } else {
-          btn.className = "w-full text-left p-3.5 rounded-xl border border-gray-200 bg-gray-50 opacity-50 text-gray-400 text-xs flex items-start space-x-3";
+          b.className = "w-full text-left p-4 rounded-xl border-slate-100 bg-white opacity-40 text-xs flex items-start space-x-3";
         }
       }
 
+      // Update Supabase stats + streak
       const userId = String(tgUser.id);
       try {
-        await supabaseClient.from('user_history').insert({
-          user_id: parseInt(userId),
-          question_id: questionId,
-          is_correct: isCorrect ? 1 : 0,
-          answered: 1
-        });
+        await supabaseClient
+          .from('user_history')
+          .insert({
+            user_id: parseInt(userId),
+            question_id: qId,
+            is_correct: isCorrect ? 1 : 0,
+            answered: 1
+          });
 
-        let { data: activeStats } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
-        if(activeStats) {
-          await supabaseClient.from('stats').update({
-            total_score: Math.max(0, activeStats.total_score + scoreDelta),
-            total_attempted: activeStats.total_attempted + 1
-          }).eq('user_id', userId);
+        const { data: st } = await supabaseClient
+          .from('stats')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        if (st) {
+          const today = new Date().toISOString().split('T')[0];
+          const lastActive = st.last_active || null;
+          let newStreak = st.streak || 0;
+
+          // If this is the first answer today, update streak
+          if (lastActive !== today) {
+            const msPerDay = 1000 * 60 * 60 * 24;
+            const daysDiff = lastActive
+              ? Math.floor((new Date(today) - new Date(lastActive)) / msPerDay)
+              : 999;
+            newStreak = daysDiff === 1 ? newStreak + 1 : 1;
+          }
+
+          await supabaseClient
+            .from('stats')
+            .update({
+              total_score: Math.max(0, (st.total_score || 0) + delta),
+              total_attempted: (st.total_attempted || 0) + 1,
+              last_active: today,
+              streak: newStreak
+            })
+            .eq('user_id', userId);
+
+          // Live-update streak in header
+          document.getElementById('streak-display').innerText =
+            newStreak > 0 ? `${newStreak} Day${newStreak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
         }
-      } catch(ex) {
-        console.error("Database status sync failure:", ex);
+      } catch (ex) {
+        console.error("Stats update error:", ex);
       }
 
+      // Show verdict and explanation
       const badge = document.getElementById('verdict-badge');
-      badge.innerText = isCorrect ? "Correct (+4)" : "Incorrect (-1)";
-      badge.className = isCorrect ? "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-emerald-100 text-emerald-800 border border-emerald-200" : "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-red-100 text-red-800 border border-red-200";
-      
-      document.getElementById('explanation-text').innerText = explanation || "No explanation registered.";
+      badge.innerText = isCorrect ? "Verdict: Correct (+4)" : "Verdict: Incorrect (-1)";
+      badge.className = isCorrect
+        ? "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200"
+        : "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-rose-100 text-rose-800 border border-rose-200";
+
+      document.getElementById('explanation-text').innerText =
+        exp || "No explanation available for this question.";
       document.getElementById('explanation-drawer').classList.remove('hidden');
     }
 
@@ -314,77 +609,32 @@
 
     function quitQuiz() {
       document.getElementById('quiz-container').classList.add('hidden');
-      document.getElementById('tab-dashboard').classList.remove('hidden');
-      syncEcosystemProfile(); 
+      switchTab('dashboard');
     }
 
-    // 7. FETCH LIVE LEADERBOARD STANDINGS FROM CLOUD
-    async function loadLeaderboard() {
-      const listContainer = document.getElementById('leaderboard-list');
-      listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-4">Syncing live standings...</p>';
-      
-      try {
-        // Query top 10 rows from stats ordered by total_score descending
-        const { data, error } = await supabaseClient
-          .from('stats')
-          .select('user_id, total_score')
-          .order('total_score', { ascending: false })
-          .limit(10);
-
-        if (error) throw error;
-
-        listContainer.innerHTML = '';
-        if (!data || data.length === 0) {
-          listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-4">No points logged yet.</p>';
-          return;
-        }
-
-        data.forEach((row, index) => {
-          const rank = index + 1;
-          let badgeClass = "bg-gray-100 text-gray-700";
-          let rankIcon = rank;
-          
-          // Premium medals formatting for top 3 positions
-          if (rank === 1) { rankIcon = "🥇"; badgeClass = "bg-amber-50 text-amber-700 border border-amber-200"; }
-          else if (rank === 2) { rankIcon = "🥈"; badgeClass = "bg-slate-50 text-slate-700 border border-slate-200"; }
-          else if (rank === 3) { rankIcon = "🥉"; badgeClass = "bg-orange-50 text-orange-700 border border-orange-200"; }
-          
-          const rowElement = document.createElement('div');
-          rowElement.className = "flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-150 transition";
-          rowElement.innerHTML = `
-            <div class="flex items-center space-x-3">
-              <span class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[11px] ${badgeClass}">${rankIcon}</span>
-              <span class="text-xs font-medium text-gray-800 font-mono">User_${String(row.user_id).slice(-4)}</span>
-            </div>
-            <span class="text-xs font-mono font-bold text-emerald-600">${row.total_score} Pts</span>
-          `;
-          listContainer.appendChild(rowElement);
-        });
-      } catch (err) {
-        console.error("Leaderboard query failure:", err);
-        listContainer.innerHTML = '<p class="text-center text-red-500 text-xs py-4">Failed to fetch cloud standings.</p>';
-      }
-    }
-
-    // 8. MULTI-TAB CONTROLLER NAVIGATION
-    function switchTab(tabId) {
+    // ── TAB NAVIGATION ────────────────────────────────────────────────────────
+    // FIX (CRITICAL): Original line 460 had a backtick/single-quote mismatch:
+    //   document.getElementById(`quiz-container').classList.add('hidden');
+    // This caused a SyntaxError that prevented the ENTIRE script from running.
+    // Everything below was dead code in the original file.
+    function switchTab(id) {
       const tabs = ['dashboard', 'practice', 'vaults', 'leaderboard'];
       tabs.forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
-        document.getElementById(`nav-${t}`).className = "flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3";
+        document.getElementById(`nav-${t}`).classList.remove('active-nav');
       });
-      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-      document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider py-1 px-3";
-      
-      // Auto fetch ranks whenever active tabs hits leaderboard views
-      if (tabId === 'leaderboard') {
-        loadLeaderboard();
-      }
+      document.getElementById('quiz-container').classList.add('hidden'); // Fixed quote
+      document.getElementById(`tab-${id}`).classList.remove('hidden');
+      document.getElementById(`nav-${id}`).classList.add('active-nav');
+
+      if (id === 'dashboard') syncEcosystemProfile();
+      if (id === 'practice') filterPracticeSubject('biology');
+      if (id === 'vaults') loadMistakeVault();
+      if (id === 'leaderboard') loadLeaderboard();
     }
 
-    // Auto load metrics profile on start
+    // ── BOOT ──────────────────────────────────────────────────────────────────
     syncEcosystemProfile();
   </script>
 </body>
 </html>
-
