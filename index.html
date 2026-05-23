@@ -45,7 +45,6 @@
 
   <main class="max-w-lg mx-auto px-4 pt-3">
 
-    <!-- DASHBOARD TAB -->
     <div id="tab-dashboard" class="space-y-5">
       <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
@@ -75,12 +74,10 @@
             <p class="text-[11px] text-slate-400 mt-0.5">Solve historical NEET papers inside a real CBT frame.</p>
           </div>
         </div>
-        <!-- FIX: Extended grid to actually show 15 years (2010–2024) -->
         <div class="grid grid-cols-3 gap-2" id="pyq-years-grid"></div>
       </div>
     </div>
 
-    <!-- PRACTICE TAB -->
     <div id="tab-practice" class="hidden space-y-4">
       <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
@@ -99,7 +96,6 @@
       </div>
     </div>
 
-    <!-- VAULTS TAB -->
     <div id="tab-vaults" class="hidden space-y-4">
       <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
@@ -113,7 +109,6 @@
       </div>
     </div>
 
-    <!-- LEADERBOARD TAB -->
     <div id="tab-leaderboard" class="hidden space-y-4">
       <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
@@ -127,7 +122,6 @@
       </div>
     </div>
 
-    <!-- QUIZ CONTAINER -->
     <div id="quiz-container" class="hidden space-y-4">
       <div class="flex items-center justify-between glass-card rounded-2xl p-3 shadow-xs">
         <button onclick="quitQuiz()" class="text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 px-4 rounded-xl font-bold transition">Exit Frame</button>
@@ -176,12 +170,13 @@
   </nav>
 
   <script>
-    // ── CONFIG ────────────────────────────────────────────────────────────────
+    // ── CONFIG ──
     const SUPABASE_URL = "https://egudrydhuaibeaocajdt.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndWRyeWRodWFpYmVhb2NhamR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODM3OTAsImV4cCI6MjA5NTA1OTc5MH0.jahbGaplQdSvQl_Ub1Is0GjoXYadAm1ddjvtsp-7UQw";
+    // ⚠️ ATTACH YOUR ORIGINAL LONG PUBLIC ANON KEY HERE (Jetaa eyJ... diye shuru hoy)
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndWRyeWRodWFpYmVhb2NhamR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODM3OTAsImV4cCI6MjA5NTA1OTc5MH0.jahbGaplQdSvQl_Ub1Is0GjoXYadAm1ddjvtsp-7UQw"; 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ── APP STATE ─────────────────────────────────────────────────────────────
+    // ── APP STATE ──
     let tgUser = { id: "1458889763", first_name: "Suman Karan" };
     let currentQuestionsPool = [];
     let activeQuestionIdx = 0;
@@ -197,8 +192,7 @@
       }
     }
 
-    // ── PYQ YEAR GRID
-    // FIX: Was only 9 years (2016–2024). Extended to 15 years (2010–2024).
+    // Render 15-Year Grid
     const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
     const gridContainer = document.getElementById('pyq-years-grid');
     pyqYears.forEach(year => {
@@ -209,10 +203,12 @@
       gridContainer.appendChild(btn);
     });
 
-    // ── PROFILE SYNC ──────────────────────────────────────────────────────────
+    // ── PROFILE SYNC (FIX: Handles Int8/String ID mismatches & premium theme styles) ──
     async function syncEcosystemProfile() {
-      const userId = String(tgUser.id);
-      document.getElementById('tg-id').innerText = `ID: ${userId}`;
+      const userIdStr = String(tgUser.id);
+      const userIdNum = parseInt(tgUser.id);
+
+      document.getElementById('tg-id').innerText = `ID: ${userIdStr}`;
       document.getElementById('user-name').innerText = tgUser.first_name;
       document.getElementById('avatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
 
@@ -220,25 +216,34 @@
         const { data: userRow } = await supabaseClient
           .from('users')
           .select('*')
-          .eq('user_id', userId)
-          .single();
+          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .maybeSingle();
 
-        if (userRow) {
-          document.getElementById('plan-badge').innerText = userRow.status.toUpperCase();
+        if (userRow && userRow.status) {
+          const statusText = userRow.status.toUpperCase();
+          const badge = document.getElementById('plan-badge');
+          badge.innerText = statusText;
+          
+          if (statusText === 'PREMIUM') {
+            badge.className = "bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-amber-300";
+          } else {
+            badge.className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200";
+          }
+        } else {
+          document.getElementById('plan-badge').innerText = "FREE";
+          document.getElementById('plan-badge').className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200";
         }
 
         const { data: statsRow } = await supabaseClient
           .from('stats')
           .select('*')
-          .eq('user_id', userId)
-          .single();
+          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .maybeSingle();
 
         if (statsRow) {
           document.getElementById('score-display').innerText = statsRow.total_score ?? 0;
 
-          // FIX: Real streak logic using last_active date comparison.
-          // Requires 'streak' and 'last_active' (DATE) columns in your stats table.
-          const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+          const today = new Date().toISOString().split('T')[0];
           const lastActive = statsRow.last_active || null;
           let streak = statsRow.streak || 0;
 
@@ -246,22 +251,17 @@
             const msPerDay = 1000 * 60 * 60 * 24;
             const daysDiff = Math.floor((new Date(today) - new Date(lastActive)) / msPerDay);
             if (daysDiff > 1) {
-              // Missed a day — reset streak in DB
               streak = 0;
               await supabaseClient
                 .from('stats')
                 .update({ streak: 0 })
-                .eq('user_id', userId);
+                .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`);
             }
-            // if daysDiff === 1, streak is intact, will increment on first answer today
           }
 
-          const streakLabel = streak > 0
-            ? `${streak} Day${streak > 1 ? 's' : ''} 🔥`
-            : 'Start 🔥';
+          const streakLabel = streak > 0 ? `${streak} Day${streak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
           document.getElementById('streak-display').innerText = streakLabel;
 
-          // Daily progress counter (cycles per 10 attempts)
           const done = (statsRow.total_attempted || 0) % 10;
           document.getElementById('target-count').innerText = `${done}/10`;
           document.getElementById('target-progress').style.width = `${(done / 10) * 100}%`;
@@ -271,10 +271,7 @@
       }
     }
 
-    // ── PYQ LOADER ────────────────────────────────────────────────────────────
-    // FIX: Old code did data.filter(q => q.question.includes(String(year))) — that
-    // searched for the year number inside question text, which is wrong and expensive.
-    // Now filters by a proper 'year' column in the questions table.
+    // ── PYQ LOADER ──
     async function loadPYQPaper(year) {
       const { data, error } = await supabaseClient
         .from('questions')
@@ -286,7 +283,7 @@
         return;
       }
       if (!data || data.length === 0) {
-        alert(`No questions found for ${year}.`);
+        alert(`No questions found for year ${year}.`);
         return;
       }
 
@@ -295,7 +292,7 @@
       startQuizSession();
     }
 
-    // ── PRACTICE: SUBJECT FILTER ──────────────────────────────────────────────
+    // ── PRACTICE: SUBJECT FILTER ──
     function filterPracticeSubject(sub) {
       ['biology', 'physics', 'chemistry'].forEach(s => {
         document.getElementById(`sub-btn-${s}`).className =
@@ -312,9 +309,7 @@
       loadPracticeChapters();
     }
 
-    // ── PRACTICE: CHAPTER LIST ────────────────────────────────────────────────
-    // FIX: Old code fetched real data but then threw it away and showed hardcoded
-    // placeholder chapters. Now reads actual chapter names from the 'chapter' column.
+    // ── PRACTICE: CHAPTER LIST (FIX: Changed to 'topic' and '.ilike' case insensitivity) ──
     async function loadPracticeChapters() {
       const targetList = document.getElementById('chapters-list');
       targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">Loading chapters...</p>';
@@ -322,14 +317,14 @@
       const { data, error } = await supabaseClient
         .from('questions')
         .select('topic')
-        .eq('subject', selectedPracticeSubject);
+        .ilike('subject', selectedPracticeSubject);
 
       if (error || !data) {
         targetList.innerHTML = '<p class="text-center text-xs text-red-400 py-3">Failed to load chapters.</p>';
         return;
       }
 
-      const uniqueChapters = [...new Set(data.map(q => q.chapter).filter(Boolean))].sort();
+      const uniqueChapters = [...new Set(data.map(q => q.topic).filter(Boolean))].sort();
 
       if (uniqueChapters.length === 0) {
         targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">No chapters found for this subject.</p>';
@@ -349,13 +344,12 @@
       });
     }
 
-    // ── PRACTICE: LAUNCH CHAPTER QUIZ ────────────────────────────────────────
-    // FIX: Old code only filtered by subject, not chapter. Now passes both.
+    // ── PRACTICE: LAUNCH CHAPTER QUIZ (FIX: Case-insensitive 'topic' filter match) ──
     async function launchPracticeChapterQuiz(subject, chapter) {
       const { data, error } = await supabaseClient
         .from('questions')
         .select('*')
-        .eq('subject', subject)
+        .ilike('subject', subject)
         .eq('topic', chapter)
         .limit(10);
 
@@ -369,7 +363,7 @@
       startQuizSession();
     }
 
-    // ── MISTAKE VAULT ─────────────────────────────────────────────────────────
+    // ── MISTAKE VAULT (FIX: Syncs with boolean 'false' datatype from Python Bot) ──
     async function loadMistakeVault() {
       const container = document.getElementById('vaults-list');
       container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">Loading mistake vault...</p>';
@@ -379,7 +373,7 @@
         .from('user_history')
         .select('question_id')
         .eq('user_id', parseInt(userId))
-        .eq('is_correct', 0);
+        .eq('is_correct', false);
 
       if (error || !hist || hist.length === 0) {
         container.innerHTML = '<p class="text-center text-xs font-medium text-slate-400 py-6">🎉 Your Mistake Vault is completely clear!</p>';
@@ -412,7 +406,7 @@
       });
     }
 
-    // ── LEADERBOARD ───────────────────────────────────────────────────────────
+    // ── LEADERBOARD WITH NAME RESOLUTION ──
     async function loadLeaderboard() {
       const listContainer = document.getElementById('leaderboard-list');
       listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">Syncing rankings...</p>';
@@ -427,7 +421,7 @@
         if (statsError) throw statsError;
 
         if (!statsData || statsData.length === 0) {
-          listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">No rankings yet. Be the first!</p>';
+          listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">No rankings yet.</p>';
           return;
         }
 
@@ -467,7 +461,7 @@
       }
     }
 
-    // ── QUIZ: START SESSION ───────────────────────────────────────────────────
+    // ── QUIZ: START SESSION ──
     function startQuizSession() {
       ['dashboard', 'practice', 'vaults', 'leaderboard'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -476,7 +470,7 @@
       renderActiveOMRCard();
     }
 
-    // ── QUIZ: RENDER QUESTION ─────────────────────────────────────────────────
+    // ── QUIZ: RENDER QUESTION ──
     function renderActiveOMRCard() {
       if (activeQuestionIdx >= currentQuestionsPool.length) {
         alert("🏁 Session Complete! Well done.");
@@ -493,10 +487,7 @@
       document.getElementById('question-text').innerText = q.question;
 
       const opts = [
-        { k: 'A', t: q.opt1 },
-        { k: 'B', t: q.opt2 },
-        { k: 'C', t: q.opt3 },
-        { k: 'D', t: q.opt4 }
+        { k: 'A', t: q.opt1 }, { k: 'B', t: q.opt2 }, { k: 'C', t: q.opt3 }, { k: 'D', t: q.opt4 }
       ];
 
       const block = document.getElementById('options-block');
@@ -504,8 +495,6 @@
       opts.forEach(opt => {
         if (!opt.t) return;
         const btn = document.createElement('button');
-        // FIX: Store the option key in a data attribute instead of relying on
-        // innerText.startsWith(), which was fragile due to nested span elements.
         btn.dataset.key = opt.k;
         btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 text-xs font-medium transition flex items-start space-x-3";
         btn.innerHTML = `
@@ -517,7 +506,7 @@
       });
     }
 
-    // ── QUIZ: VERIFY ANSWER ───────────────────────────────────────────────────
+    // ── QUIZ: VERIFY ANSWER (FIX: Stores true/false booleans for clean syncing) ──
     async function verifyOMRSelection(el, letter, correctIdx, exp, qId) {
       if (hasAnsweredQ) return;
       hasAnsweredQ = true;
@@ -527,7 +516,6 @@
       const isCorrect = (letter === rightLetter);
       const delta = isCorrect ? 4 : -1;
 
-      // FIX: Use data-key attribute for reliable option matching.
       const btns = document.getElementById('options-block').children;
       for (let b of btns) {
         b.disabled = true;
@@ -540,35 +528,32 @@
         }
       }
 
-      // Update Supabase stats + streak
-      const userId = String(tgUser.id);
+      const userIdStr = String(tgUser.id);
+      const userIdNum = parseInt(tgUser.id);
       try {
         await supabaseClient
           .from('user_history')
           .insert({
-            user_id: parseInt(userId),
+            user_id: userIdNum,
             question_id: qId,
-            is_correct: isCorrect ? 1 : 0,
+            is_correct: isCorrect,
             answered: 1
           });
 
         const { data: st } = await supabaseClient
           .from('stats')
           .select('*')
-          .eq('user_id', userId)
-          .single();
+          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .maybeSingle();
 
         if (st) {
           const today = new Date().toISOString().split('T')[0];
           const lastActive = st.last_active || null;
           let newStreak = st.streak || 0;
 
-          // If this is the first answer today, update streak
           if (lastActive !== today) {
             const msPerDay = 1000 * 60 * 60 * 24;
-            const daysDiff = lastActive
-              ? Math.floor((new Date(today) - new Date(lastActive)) / msPerDay)
-              : 999;
+            const daysDiff = lastActive ? Math.floor((new Date(today) - new Date(lastActive)) / msPerDay) : 999;
             newStreak = daysDiff === 1 ? newStreak + 1 : 1;
           }
 
@@ -580,9 +565,8 @@
               last_active: today,
               streak: newStreak
             })
-            .eq('user_id', userId);
+            .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`);
 
-          // Live-update streak in header
           document.getElementById('streak-display').innerText =
             newStreak > 0 ? `${newStreak} Day${newStreak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
         }
@@ -590,15 +574,13 @@
         console.error("Stats update error:", ex);
       }
 
-      // Show verdict and explanation
       const badge = document.getElementById('verdict-badge');
       badge.innerText = isCorrect ? "Verdict: Correct (+4)" : "Verdict: Incorrect (-1)";
       badge.className = isCorrect
         ? "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200"
         : "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-rose-100 text-rose-800 border border-rose-200";
 
-      document.getElementById('explanation-text').innerText =
-        exp || "No explanation available for this question.";
+      document.getElementById('explanation-text').innerText = exp || "No explanation available for this question.";
       document.getElementById('explanation-drawer').classList.remove('hidden');
     }
 
@@ -612,18 +594,14 @@
       switchTab('dashboard');
     }
 
-    // ── TAB NAVIGATION ────────────────────────────────────────────────────────
-    // FIX (CRITICAL): Original line 460 had a backtick/single-quote mismatch:
-    //   document.getElementById(`quiz-container').classList.add('hidden');
-    // This caused a SyntaxError that prevented the ENTIRE script from running.
-    // Everything below was dead code in the original file.
+    // ── TAB NAVIGATION (FIX: Clean matching quotes string routing) ──
     function switchTab(id) {
       const tabs = ['dashboard', 'practice', 'vaults', 'leaderboard'];
       tabs.forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
         document.getElementById(`nav-${t}`).classList.remove('active-nav');
       });
-      document.getElementById('quiz-container').classList.add('hidden'); // Fixed quote
+      document.getElementById('quiz-container').classList.add('hidden');
       document.getElementById(`tab-${id}`).classList.remove('hidden');
       document.getElementById(`nav-${id}`).classList.add('active-nav');
 
@@ -633,7 +611,7 @@
       if (id === 'leaderboard') loadLeaderboard();
     }
 
-    // ── BOOT ──────────────────────────────────────────────────────────────────
+    // ── BOOT ──
     syncEcosystemProfile();
   </script>
 </body>
