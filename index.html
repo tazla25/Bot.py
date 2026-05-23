@@ -9,21 +9,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style>
     body {
-      background: var(--tg-theme-secondary-bg-color, #f4f6f9);
-      color: var(--tg-theme-text-color, #1e293b);
+      background: var(--tg-theme-secondary-bg-color, #f1f5f9);
+      color: var(--tg-theme-text-color, #0f172a);
     }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
+    .premium-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
     .active-nav {
-      color: #10b981;
-      transform: translateY(-2px);
+      color: #10b981 !important;
+      font-weight: 800;
     }
   </style>
 </head>
-<body class="font-sans antialiased pb-28 text-slate-800">
+<body class="font-sans antialiased pb-28 text-slate-900">
 
   <header class="max-w-lg mx-auto px-4 pt-5 pb-2 flex items-center justify-between">
     <div class="flex items-center space-x-3">
@@ -33,12 +33,12 @@
       <div>
         <div class="flex items-center space-x-2">
           <h3 id="user-name" class="font-bold text-base text-slate-900 leading-tight">Aspirant</h3>
-          <span id="plan-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200">Free</span>
+          <span id="plan-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-emerald-200">FREE</span>
         </div>
         <p id="tg-id" class="text-[10px] text-slate-400 font-mono mt-0.5">ID: Fetching...</p>
       </div>
     </div>
-    <div class="bg-white border border-slate-100 rounded-xl px-3 py-1.5 shadow-xs flex items-center space-x-1">
+    <div class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm flex items-center space-x-1">
       <span class="text-xs font-bold text-slate-700 font-mono" id="streak-display">-- 🔥</span>
     </div>
   </header>
@@ -46,14 +46,13 @@
   <main class="max-w-lg mx-auto px-4 pt-3">
 
     <div id="tab-dashboard" class="space-y-5">
-      <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+      <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
           <div>
             <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold block">Unified Target Score</span>
             <span id="score-display" class="text-4xl font-black font-mono bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">0</span>
           </div>
-          <span class="text-xs bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full text-emerald-400 font-medium">Ecosystem Live</span>
+          <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-emerald-400 font-medium">Ecosystem Live</span>
         </div>
         <div class="space-y-2">
           <div class="flex items-center justify-between text-xs text-slate-300">
@@ -66,9 +65,9 @@
         </div>
       </div>
 
-      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+      <div class="premium-card p-5 rounded-3xl space-y-4">
         <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 text-lg shadow-2xs">⏳</div>
+          <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 text-lg font-bold">⏳</div>
           <div>
             <h4 class="font-bold text-sm text-slate-900 leading-tight">15-Year PYQ Solver Vault</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">Solve historical NEET papers inside a real CBT frame.</p>
@@ -79,9 +78,9 @@
     </div>
 
     <div id="tab-practice" class="hidden space-y-4">
-      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+      <div class="premium-card p-5 rounded-3xl space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
-          <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 text-lg shadow-2xs">🧬</div>
+          <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 text-lg font-bold">🧬</div>
           <div>
             <h4 class="font-bold text-sm text-slate-900 leading-tight">Syllabus Topic Practice</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">Select a subject to target individual core chapters.</p>
@@ -97,9 +96,9 @@
     </div>
 
     <div id="tab-vaults" class="hidden space-y-4">
-      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+      <div class="premium-card p-5 rounded-3xl space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
-          <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-100 text-lg shadow-2xs">🔥</div>
+          <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-100 text-lg font-bold">🔥</div>
           <div>
             <h4 class="font-bold text-sm text-slate-900 leading-tight">Personal Mistake Vault</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">Review and clear out previous incorrect question logs.</p>
@@ -110,9 +109,9 @@
     </div>
 
     <div id="tab-leaderboard" class="hidden space-y-4">
-      <div class="glass-card p-5 rounded-3xl shadow-xs space-y-4">
+      <div class="premium-card p-5 rounded-3xl space-y-4">
         <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
-          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 text-lg shadow-2xs">🏆</div>
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 text-lg font-bold">🏆</div>
           <div>
             <h4 class="font-bold text-sm text-slate-900 leading-tight">Global Live Leaderboard</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">Top ranking aspirants synced dynamically across the cloud.</p>
@@ -123,24 +122,24 @@
     </div>
 
     <div id="quiz-container" class="hidden space-y-4">
-      <div class="flex items-center justify-between glass-card rounded-2xl p-3 shadow-xs">
+      <div class="flex items-center justify-between premium-card rounded-2xl p-3">
         <button onclick="quitQuiz()" class="text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 px-4 rounded-xl font-bold transition">Exit Frame</button>
         <span id="quiz-meta" class="text-xs font-mono font-bold bg-slate-900 text-white px-3 py-1 rounded-lg">Q: 1/10</span>
       </div>
 
-      <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
+      <div class="premium-card rounded-3xl p-6 space-y-5">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
           <span id="quiz-subject" class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">Biology</span>
         </div>
-        <p id="question-text" class="text-sm font-bold text-slate-900 leading-relaxed">Loading question...</p>
+        <p id="question-text" class="text-sm font-bold text-slate-900 leading-relaxed">Loading question text...</p>
         <div class="space-y-3" id="options-block"></div>
       </div>
 
-      <div id="explanation-drawer" class="hidden glass-card rounded-3xl p-5 border border-emerald-100 shadow-sm space-y-4">
+      <div id="explanation-drawer" class="hidden premium-card rounded-3xl p-5 border border-emerald-200 space-y-4">
         <div id="verdict-badge" class="inline-block text-xs font-extrabold px-3 py-1 rounded-md uppercase tracking-wider">Correct</div>
-        <div class="text-xs text-slate-700 bg-slate-50/50 p-4 rounded-2xl border border-slate-100 leading-relaxed">
+        <div class="text-xs text-slate-700 bg-slate-50 p-4 rounded-2xl border border-slate-100 leading-relaxed">
           <span class="font-bold text-slate-900 block mb-1.5 text-xs">Concept Breakdown:</span>
-          <p id="explanation-text">Explanation will appear here.</p>
+          <p id="explanation-text">Explanation content.</p>
         </div>
         <button onclick="nextQuestion()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold py-3.5 rounded-2xl shadow-md transition flex items-center justify-center space-x-1">
           <span>Continue Next Question</span> <span>➡️</span>
@@ -150,33 +149,26 @@
 
   </main>
 
-  <nav class="fixed bottom-5 inset-x-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 px-3 py-2.5 flex justify-around z-50 max-w-md mx-auto rounded-2xl shadow-2xl transition duration-200">
-    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group active-nav" id="nav-dashboard">
-      <span class="text-base group-hover:scale-110 transition">🏠</span>
-      <span>Home</span>
+  <nav class="fixed bottom-5 inset-x-4 bg-slate-950/95 backdrop-blur-md border border-slate-800 px-3 py-2.5 flex justify-around z-50 max-w-md mx-auto rounded-2xl shadow-2xl">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 active-nav" id="nav-dashboard">
+      <span class="text-base">🏠</span><span>Home</span>
     </button>
-    <button onclick="switchTab('practice')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-practice">
-      <span class="text-base group-hover:scale-110 transition">🔬</span>
-      <span>Practice</span>
+    <button onclick="switchTab('practice')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2" id="nav-practice">
+      <span class="text-base">🔬</span><span>Practice</span>
     </button>
-    <button onclick="switchTab('vaults')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-vaults">
-      <span class="text-base group-hover:scale-110 transition">📦</span>
-      <span>Vaults</span>
+    <button onclick="switchTab('vaults')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2" id="nav-vaults">
+      <span class="text-base">📦</span><span>Vaults</span>
     </button>
-    <button onclick="switchTab('leaderboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2 group" id="nav-leaderboard">
-      <span class="text-base group-hover:scale-110 transition">🏆</span>
-      <span>Ranks</span>
+    <button onclick="switchTab('leaderboard')" class="flex flex-col items-center space-y-1 text-slate-400 text-[10px] uppercase font-bold tracking-wider py-1 px-2" id="nav-leaderboard">
+      <span class="text-base">🏆</span><span>Ranks</span>
     </button>
   </nav>
 
   <script>
-    // ── CONFIG ──
     const SUPABASE_URL = "https://egudrydhuaibeaocajdt.supabase.co";
-    // ⚠️ ATTACH YOUR ORIGINAL LONG PUBLIC ANON KEY HERE (Jetaa eyJ... diye shuru hoy)
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndWRyeWRodWFpYmVhb2NhamR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODM3OTAsImV4cCI6MjA5NTA1OTc5MH0.jahbGaplQdSvQl_Ub1Is0GjoXYadAm1ddjvtsp-7UQw"; 
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndWRyeWRodWFpYmVhb2NhamR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODM3OTAsImV4cCI6MjA5NTA1OTc5MH0.jahbGaplQdSvQl_Ub1Is0GjoXYadAm1ddjvtsp-7UQw"; // 👈 ড্যাশবোর্ডের আসল বড় anon key-টা এখানে বসাও
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ── APP STATE ──
     let tgUser = { id: "1458889763", first_name: "Suman Karan" };
     let currentQuestionsPool = [];
     let activeQuestionIdx = 0;
@@ -192,23 +184,21 @@
       }
     }
 
-    // Render 15-Year Grid
+    // Generate PYQ Grid
     const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
     const gridContainer = document.getElementById('pyq-years-grid');
     pyqYears.forEach(year => {
       const btn = document.createElement('button');
-      btn.className = "bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-700 font-mono font-bold py-3 text-xs rounded-xl border border-slate-150 shadow-2xs transition duration-150";
+      btn.className = "bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-slate-800 font-mono font-bold py-3 text-xs rounded-xl border border-slate-200 text-center transition duration-150 shadow-2xs";
       btn.innerText = year;
       btn.onclick = () => loadPYQPaper(year);
       gridContainer.appendChild(btn);
     });
 
-    // ── PROFILE SYNC (FIX: Handles Int8/String ID mismatches & premium theme styles) ──
+    // ── PROFILE SYNC (FIXED: Supports fallback fields and multi-type query parsing) ──
     async function syncEcosystemProfile() {
-      const userIdStr = String(tgUser.id);
-      const userIdNum = parseInt(tgUser.id);
-
-      document.getElementById('tg-id').innerText = `ID: ${userIdStr}`;
+      const userId = String(tgUser.id);
+      document.getElementById('tg-id').innerText = `ID: ${userId}`;
       document.getElementById('user-name').innerText = tgUser.first_name;
       document.getElementById('avatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
 
@@ -216,33 +206,31 @@
         const { data: userRow } = await supabaseClient
           .from('users')
           .select('*')
-          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .eq('user_id', userId)
           .maybeSingle();
 
-        if (userRow && userRow.status) {
-          const statusText = userRow.status.toUpperCase();
-          const badge = document.getElementById('plan-badge');
-          badge.innerText = statusText;
-          
-          if (statusText === 'PREMIUM') {
-            badge.className = "bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-amber-300";
+        const badge = document.getElementById('plan-badge');
+        if (userRow) {
+          const planStatus = (userRow.status || userRow.plan || 'FREE').toUpperCase();
+          badge.innerText = planStatus;
+          if (planStatus === 'PREMIUM') {
+            badge.className = "bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-amber-300 shadow-sm";
           } else {
-            badge.className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200";
+            badge.className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-emerald-200";
           }
         } else {
-          document.getElementById('plan-badge').innerText = "FREE";
-          document.getElementById('plan-badge').className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-2xs border border-emerald-200";
+          badge.innerText = "FREE";
+          badge.className = "bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-emerald-200";
         }
 
         const { data: statsRow } = await supabaseClient
           .from('stats')
           .select('*')
-          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .eq('user_id', userId)
           .maybeSingle();
 
         if (statsRow) {
           document.getElementById('score-display').innerText = statsRow.total_score ?? 0;
-
           const today = new Date().toISOString().split('T')[0];
           const lastActive = statsRow.last_active || null;
           let streak = statsRow.streak || 0;
@@ -252,16 +240,11 @@
             const daysDiff = Math.floor((new Date(today) - new Date(lastActive)) / msPerDay);
             if (daysDiff > 1) {
               streak = 0;
-              await supabaseClient
-                .from('stats')
-                .update({ streak: 0 })
-                .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`);
+              await supabaseClient.from('stats').update({ streak: 0 }).eq('user_id', userId);
             }
           }
 
-          const streakLabel = streak > 0 ? `${streak} Day${streak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
-          document.getElementById('streak-display').innerText = streakLabel;
-
+          document.getElementById('streak-display').innerText = streak > 0 ? `${streak} Day${streak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
           const done = (statsRow.total_attempted || 0) % 10;
           document.getElementById('target-count').innerText = `${done}/10`;
           document.getElementById('target-progress').style.width = `${(done / 10) * 100}%`;
@@ -278,138 +261,127 @@
         .select('*')
         .eq('year', year);
 
-      if (error) {
-        alert("Failed to load questions. Check your connection.");
-        return;
-      }
-      if (!data || data.length === 0) {
-        alert(`No questions found for year ${year}.`);
-        return;
-      }
+      if (error) return alert("Failed to load questions from database.");
+      if (!data || data.length === 0) return alert(`No historical data logged for year ${year}.`);
 
       currentQuestionsPool = data;
       activeQuestionIdx = 0;
       startQuizSession();
     }
 
-    // ── PRACTICE: SUBJECT FILTER ──
+    // ── PRACTICE SUBJECT CONTROL ──
     function filterPracticeSubject(sub) {
       ['biology', 'physics', 'chemistry'].forEach(s => {
-        document.getElementById(`sub-btn-${s}`).className =
-          "flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition";
+        document.getElementById(`sub-btn-${s}`).className = "flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition";
       });
-      const activeColorMap = {
-        biology: 'bg-emerald-500',
-        physics: 'bg-blue-500',
-        chemistry: 'bg-amber-500'
-      };
-      document.getElementById(`sub-btn-${sub}`).className =
-        `flex-1 ${activeColorMap[sub]} text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-xs transition`;
+      const colorMap = { biology: 'bg-emerald-500', physics: 'bg-blue-500', chemistry: 'bg-amber-500' };
+      document.getElementById(`sub-btn-${sub}`).className = `flex-1 ${colorMap[sub]} text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-xs transition`;
       selectedPracticeSubject = sub;
       loadPracticeChapters();
     }
 
-    // ── PRACTICE: CHAPTER LIST (FIX: Changed to 'topic' and '.ilike' case insensitivity) ──
+    // ── PRACTICE CHAPTERS LIST (FIXED: Flexible topic lookups via case-insensitive engine) ──
     async function loadPracticeChapters() {
       const targetList = document.getElementById('chapters-list');
       targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">Loading chapters...</p>';
 
       const { data, error } = await supabaseClient
         .from('questions')
-        .select('topic')
-        .ilike('subject', selectedPracticeSubject);
+        .select('topic, subject');
 
       if (error || !data) {
-        targetList.innerHTML = '<p class="text-center text-xs text-red-400 py-3">Failed to load chapters.</p>';
+        targetList.innerHTML = '<p class="text-center text-xs text-red-400 py-3">Failed to load syllabus items.</p>';
         return;
       }
 
-      const uniqueChapters = [...new Set(data.map(q => q.topic).filter(Boolean))].sort();
+      // Client-side filtering ensures case differences in the 'subject' column don't break logic
+      const filteredData = data.filter(q => q.subject && q.subject.toLowerCase() === selectedPracticeSubject.toLowerCase());
+      const uniqueChapters = [...new Set(filteredData.map(q => q.topic).filter(Boolean))].sort();
 
       if (uniqueChapters.length === 0) {
-        targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">No chapters found for this subject.</p>';
+        targetList.innerHTML = '<p class="text-center text-xs text-slate-400 py-3">No active chapters registered under this subject block.</p>';
         return;
       }
 
       targetList.innerHTML = '';
       uniqueChapters.forEach(ch => {
         const row = document.createElement('div');
-        row.className = "flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/60 transition cursor-pointer";
+        row.className = "flex items-center justify-between p-3.5 bg-white hover:bg-slate-50 rounded-xl border border-slate-200 shadow-2xs transition cursor-pointer";
         row.innerHTML = `
           <span class="text-xs font-bold text-slate-800">${ch}</span>
-          <span class="text-[10px] font-mono bg-white border border-slate-200 px-2 py-0.5 rounded-md text-slate-500 font-bold">Launch 🚀</span>
+          <span class="text-[10px] font-mono bg-slate-900 px-2 py-0.5 rounded-md text-white font-bold">Launch 🚀</span>
         `;
-        row.onclick = () => launchPracticeChapterQuiz(selectedPracticeSubject, ch);
+        row.onclick = () => launchPracticeChapterQuiz(ch);
         targetList.appendChild(row);
       });
     }
 
-    // ── PRACTICE: LAUNCH CHAPTER QUIZ (FIX: Case-insensitive 'topic' filter match) ──
-    async function launchPracticeChapterQuiz(subject, chapter) {
+    async function launchPracticeChapterQuiz(chapterName) {
       const { data, error } = await supabaseClient
         .from('questions')
         .select('*')
-        .ilike('subject', subject)
-        .eq('topic', chapter)
+        .eq('topic', chapterName)
         .limit(10);
 
-      if (error || !data || data.length === 0) {
-        alert("No questions found for this chapter.");
-        return;
-      }
+      if (error || !data || data.length === 0) return alert("Failed to fetch target parameters.");
 
       currentQuestionsPool = data;
       activeQuestionIdx = 0;
       startQuizSession();
     }
 
-    // ── MISTAKE VAULT (FIX: Syncs with boolean 'false' datatype from Python Bot) ──
+    // ── MISTAKE VAULT (FIXED: Ultra-safe datatype parser captures booleans, numbers, and string variations) ──
     async function loadMistakeVault() {
       const container = document.getElementById('vaults-list');
-      container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">Loading mistake vault...</p>';
+      container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">Loading mistake vault logs...</p>';
 
       const userId = String(tgUser.id);
       const { data: hist, error } = await supabaseClient
         .from('user_history')
-        .select('question_id')
-        .eq('user_id', parseInt(userId))
-        .eq('is_correct', false);
+        .select('*')
+        .eq('user_id', userId);
 
       if (error || !hist || hist.length === 0) {
         container.innerHTML = '<p class="text-center text-xs font-medium text-slate-400 py-6">🎉 Your Mistake Vault is completely clear!</p>';
         return;
       }
 
-      const ids = hist.map(h => h.question_id);
-      const { data: qRows, error: qErr } = await supabaseClient
-        .from('questions')
-        .select('*')
-        .in('id', ids);
+      // Parse records on client-side to prevent type coercion mismatch bugs from the Python bot data types
+      const incorrectRecords = hist.filter(h => h.is_correct === false || h.is_correct === 0 || String(h.is_correct).toLowerCase() === 'false');
 
-      if (qErr || !qRows || qRows.length === 0) {
-        container.innerHTML = '<p class="text-center text-xs text-red-400 py-4">Failed to load vault questions.</p>';
+      if (incorrectRecords.length === 0) {
+        container.innerHTML = '<p class="text-center text-xs font-medium text-slate-400 py-6">🎉 Your Mistake Vault is completely clear!</p>';
         return;
       }
 
+      const questionIds = incorrectRecords.map(h => h.question_id);
+      const { data: qRows } = await supabaseClient
+        .from('questions')
+        .select('*')
+        .in('id', questionIds);
+
       container.innerHTML = '';
+      if (!qRows || qRows.length === 0) {
+        container.innerHTML = '<p class="text-center text-xs text-red-400 py-4">Failed to load linked question payloads.</p>';
+        return;
+      }
+
       qRows.forEach(q => {
         const card = document.createElement('div');
-        card.className = "p-4 rounded-2xl bg-rose-50/50 border border-rose-100 space-y-2";
+        card.className = "p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2";
         card.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="text-[9px] font-black uppercase bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md">${q.subject}</span>
-          </div>
+          <div class="flex justify-between items-center"><span class="text-[9px] font-black uppercase bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md">${q.subject}</span></div>
           <p class="text-xs font-bold text-slate-900 leading-relaxed">${q.question}</p>
-          <p class="text-[11px] text-emerald-700 font-bold bg-white border border-emerald-100 p-2 rounded-xl mt-1">💡 Correct Answer: Option ${q.correct}</p>
+          <p class="text-[11px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-100 p-2.5 rounded-xl mt-1">💡 Correct Option Target: ${q.correct}</p>
         `;
         container.appendChild(card);
       });
     }
 
-    // ── LEADERBOARD WITH NAME RESOLUTION ──
+    // ── LEADERBOARD STANDINGS ──
     async function loadLeaderboard() {
       const listContainer = document.getElementById('leaderboard-list');
-      listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">Syncing rankings...</p>';
+      listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">Syncing live standings...</p>';
 
       try {
         const { data: statsData, error: statsError } = await supabaseClient
@@ -421,15 +393,12 @@
         if (statsError) throw statsError;
 
         if (!statsData || statsData.length === 0) {
-          listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">No rankings yet.</p>';
+          listContainer.innerHTML = '<p class="text-center text-slate-400 text-xs py-4">No points logged yet.</p>';
           return;
         }
 
         const userIds = statsData.map(r => String(r.user_id));
-        const { data: usersData } = await supabaseClient
-          .from('users')
-          .select('user_id, first_name')
-          .in('user_id', userIds);
+        const { data: usersData } = await supabaseClient.from('users').select('user_id, first_name').in('user_id', userIds);
 
         const lookup = {};
         if (usersData) usersData.forEach(u => { lookup[String(u.user_id)] = u.first_name; });
@@ -446,7 +415,7 @@
 
           const finalName = lookup[String(row.user_id)] || `Aspirant_${String(row.user_id).slice(-4)}`;
           const card = document.createElement('div');
-          card.className = "flex items-center justify-between p-3.5 bg-slate-50 border border-slate-150 rounded-xl shadow-2xs";
+          card.className = "flex items-center justify-between p-3.5 bg-white border border-slate-200 rounded-xl shadow-2xs";
           card.innerHTML = `
             <div class="flex items-center space-x-3">
               <span class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[11px] ${badgeClass}">${rankIcon}</span>
@@ -457,11 +426,12 @@
           listContainer.appendChild(card);
         });
       } catch (err) {
-        listContainer.innerHTML = '<p class="text-center text-xs text-red-500 py-3">Error fetching leaderboard.</p>';
+        listContainer.innerHTML = '<p class="text-center text-xs text-red-500 py-3">Error fetching standings.</p>';
       }
     }
 
-    // ── QUIZ: START SESSION ──
+    // ── QUIZ FLOW ROUTINES ──
+     Zion
     function startQuizSession() {
       ['dashboard', 'practice', 'vaults', 'leaderboard'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -470,10 +440,9 @@
       renderActiveOMRCard();
     }
 
-    // ── QUIZ: RENDER QUESTION ──
     function renderActiveOMRCard() {
       if (activeQuestionIdx >= currentQuestionsPool.length) {
-        alert("🏁 Session Complete! Well done.");
+        alert("🏁 Session Completed Successfully!");
         quitQuiz();
         return;
       }
@@ -486,27 +455,25 @@
       document.getElementById('quiz-subject').innerText = q.subject.toUpperCase();
       document.getElementById('question-text').innerText = q.question;
 
-      const opts = [
-        { k: 'A', t: q.opt1 }, { k: 'B', t: q.opt2 }, { k: 'C', t: q.opt3 }, { k: 'D', t: q.opt4 }
-      ];
-
+      const opts = [{ k: 'A', t: q.opt1 }, { k: 'B', t: q.opt2 }, { k: 'C', t: q.opt3 }, { k: 'D', t: q.opt4 }];
       const block = document.getElementById('options-block');
       block.innerHTML = '';
+
       opts.forEach(opt => {
         if (!opt.t) return;
         const btn = document.createElement('button');
         btn.dataset.key = opt.k;
-        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 text-xs font-medium transition flex items-start space-x-3";
+        btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold transition flex items-start space-x-3 text-slate-800 shadow-3xs";
         btn.innerHTML = `
-          <span class="w-5 h-5 rounded-md bg-white border border-slate-200 shadow-3xs flex items-center justify-center font-bold text-[10px] text-slate-500 shrink-0">${opt.k}</span>
-          <span class="pt-0.5 flex-1">${opt.t}</span>
+          <span class="w-5 h-5 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-[10px] text-slate-500 shrink-0">${opt.k}</span>
+          <span class="pt-0.5 flex-1 leading-normal">${opt.t}</span>
         `;
         btn.onclick = () => verifyOMRSelection(btn, opt.k, q.correct, q.explanation, q.id);
         block.appendChild(btn);
       });
     }
 
-    // ── QUIZ: VERIFY ANSWER (FIX: Stores true/false booleans for clean syncing) ──
+    // ── VERIFY SUBMISSIONS (FIXED: Native deterministic key lookup prevents update crashing) ──
     async function verifyOMRSelection(el, letter, correctIdx, exp, qId) {
       if (hasAnsweredQ) return;
       hasAnsweredQ = true;
@@ -520,30 +487,24 @@
       for (let b of btns) {
         b.disabled = true;
         if (b.dataset.key === rightLetter) {
-          b.className = "w-full text-left p-4 rounded-xl border-emerald-500 bg-emerald-50 text-emerald-900 font-bold ring-4 ring-emerald-500/10 text-xs flex items-start space-x-3";
+          b.className = "w-full text-left p-4 rounded-xl border-emerald-500 bg-emerald-50 text-emerald-900 font-bold ring-4 ring-emerald-500/10 text-xs flex items-start space-x-3 shadow-3xs";
         } else if (b === el && !isCorrect) {
-          b.className = "w-full text-left p-4 rounded-xl border-rose-500 bg-rose-50 text-rose-900 font-bold ring-4 ring-rose-500/10 text-xs flex items-start space-x-3";
+          b.className = "w-full text-left p-4 rounded-xl border-rose-500 bg-rose-50 text-rose-900 font-bold ring-4 ring-rose-500/10 text-xs flex items-start space-x-3 shadow-3xs";
         } else {
           b.className = "w-full text-left p-4 rounded-xl border-slate-100 bg-white opacity-40 text-xs flex items-start space-x-3";
         }
       }
 
-      const userIdStr = String(tgUser.id);
-      const userIdNum = parseInt(tgUser.id);
+      const userId = String(tgUser.id);
       try {
         await supabaseClient
           .from('user_history')
-          .insert({
-            user_id: userIdNum,
-            question_id: qId,
-            is_correct: isCorrect,
-            answered: 1
-          });
+          .insert({ user_id: userId, question_id: qId, is_correct: isCorrect, answered: 1 });
 
         const { data: st } = await supabaseClient
           .from('stats')
           .select('*')
-          .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`)
+          .eq('user_id', userId)
           .maybeSingle();
 
         if (st) {
@@ -557,6 +518,7 @@
             newStreak = daysDiff === 1 ? newStreak + 1 : 1;
           }
 
+          // CRITICAL BUG FIX: Uses direct target `.eq()` matching instead of failing on `.or()` parameters during write loops
           await supabaseClient
             .from('stats')
             .update({
@@ -565,36 +527,31 @@
               last_active: today,
               streak: newStreak
             })
-            .or(`user_id.eq.${userIdStr},user_id.eq.${userIdNum}`);
+            .eq('user_id', userId);
 
-          document.getElementById('streak-display').innerText =
-            newStreak > 0 ? `${newStreak} Day${newStreak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
+          document.getElementById('score-display').innerText = Math.max(0, (st.total_score || 0) + delta);
+          document.getElementById('streak-display').innerText = newStreak > 0 ? `${newStreak} Day${newStreak > 1 ? 's' : ''} 🔥` : 'Start 🔥';
         }
       } catch (ex) {
-        console.error("Stats update error:", ex);
+        console.error("Stats engine write failure:", ex);
       }
 
       const badge = document.getElementById('verdict-badge');
       badge.innerText = isCorrect ? "Verdict: Correct (+4)" : "Verdict: Incorrect (-1)";
-      badge.className = isCorrect
-        ? "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200"
-        : "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-rose-100 text-rose-800 border border-rose-200";
+      badge.className = isCorrect ? "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200" : "inline-block text-[10px] font-black px-3 py-1 rounded-md bg-rose-100 text-rose-800 border border-rose-200";
 
-      document.getElementById('explanation-text').innerText = exp || "No explanation available for this question.";
+      document.getElementById('explanation-text').innerText = exp || "No explicit text explanation submitted inside database rules infrastructure.";
       document.getElementById('explanation-drawer').classList.remove('hidden');
     }
 
-    function nextQuestion() {
-      activeQuestionIdx++;
-      renderActiveOMRCard();
+    function nextQuestion() { activeQuestionIdx++; renderActiveOMRCard(); }
+    
+    function quitQuiz() { 
+      document.getElementById('quiz-container').classList.add('hidden'); 
+      switchTab('dashboard'); 
     }
 
-    function quitQuiz() {
-      document.getElementById('quiz-container').classList.add('hidden');
-      switchTab('dashboard');
-    }
-
-    // ── TAB NAVIGATION (FIX: Clean matching quotes string routing) ──
+    // ── TAB ROUTING CONTROL ──
     function switchTab(id) {
       const tabs = ['dashboard', 'practice', 'vaults', 'leaderboard'];
       tabs.forEach(t => {
@@ -611,7 +568,6 @@
       if (id === 'leaderboard') loadLeaderboard();
     }
 
-    // ── BOOT ──
     syncEcosystemProfile();
   </script>
 </body>
