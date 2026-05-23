@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEET Prep Companion</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-color: var(--tg-theme-bg-color, #f9fafb);
+      color: var(--tg-theme-text-color, #1f2937);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased pb-24">
+
+  <div class="max-w-lg mx-auto px-4 pt-4 flex items-center justify-between" id="top-bar">
+    <div class="flex items-center space-x-3">
+      <div id="avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 text-white flex items-center justify-center font-bold text-lg border border-white shadow-sm">
+        U
+      </div>
+      <div>
+        <div class="flex items-center space-x-1.5">
+          <h3 id="user-name" class="font-semibold text-gray-900 leading-tight text-sm">NEET Aspirant</h3>
+          <span id="plan-badge" class="bg-gray-100 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Free</span>
+        </div>
+        <p id="tg-id" class="text-[10px] text-gray-400 font-mono">ID: Fetching...</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-1 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1 text-emerald-700 shadow-sm">
+      <span class="text-xs font-semibold font-mono" id="streak-display">1 Days 🔥</span>
+    </div>
+  </div>
+
+  <main class="max-w-lg mx-auto px-4 pt-4" id="main-panel">
+
+    <div id="tab-dashboard" class="space-y-4">
+      <div class="bg-gradient-to-tr from-gray-950 to-indigo-950 text-white rounded-2xl p-5 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3 mb-3">
+          <div>
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest block">Unified Bot Score</span>
+            <span id="score-display" class="text-3xl font-bold font-mono text-white">0</span>
+          </div>
+        </div>
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs text-gray-300">
+            <span>Daily Target Questions</span>
+            <span id="target-count" class="font-semibold text-white font-mono">0/10</span>
+          </div>
+          <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+            <div id="target-progress" class="bg-emerald-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center border border-red-100 font-bold">⏳</div>
+          <div>
+            <h4 class="font-semibold text-xs text-gray-900 leading-tight">15-Year PYQ Solver Vault</h4>
+            <p class="text-[10px] text-gray-400">Tap on any year to solve the actual NEET papers.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-1.5 pt-1" id="pyq-years-grid">
+          </div>
+      </div>
+    </div>
+
+    <div id="quiz-container" class="hidden space-y-4">
+      <div class="flex items-center justify-between bg-white rounded-xl p-3 border border-gray-150 shadow-sm">
+        <button onclick="quitQuiz()" class="text-xs text-gray-600 bg-gray-100 py-1.5 px-3 rounded-lg font-medium">Exit Test</button>
+        <div class="flex items-center space-x-2">
+          <span id="quiz-meta" class="text-xs font-mono font-medium bg-gray-100 px-2 py-1 rounded-md">Q: 1/10</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-150 pb-2">
+          <span id="quiz-subject" class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Biology</span>
+          <span id="quiz-year-tag" class="hidden bg-red-500 text-white font-mono font-bold text-[9px] px-2 py-0.5 rounded-full">PYQ</span>
+        </div>
+        <p id="question-text" class="text-sm font-medium text-gray-900 leading-relaxed">Loading question text...</p>
+        
+        <div class="space-y-2.5" id="options-block">
+          </div>
+      </div>
+
+      <div id="explanation-drawer" class="hidden bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
+        <div id="verdict-badge" class="inline-block text-xs font-bold px-2.5 py-1 rounded-full uppercase">Correct</div>
+        <div class="text-xs text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
+          <span class="font-semibold text-gray-900 block mb-1">Answer Explanation:</span>
+          <p id="explanation-text">Explanation content goes here.</p>
+        </div>
+        <button onclick="nextQuestion()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold py-3 rounded-xl shadow-sm flex items-center justify-center space-x-1">
+          <span>Next Question ➡️</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-practice" class="hidden p-4 text-center text-gray-400 text-xs">Syllabus chapter integration loading from active cloud db...</div>
+    <div id="tab-vaults" class="hidden p-4 text-center text-gray-400 text-xs">Mistake Vault & Saved Bookmarks loading dynamically...</div>
+    <div id="tab-leaderboard" class="hidden p-4 text-center text-gray-400 text-xs">Standings grid updates live via bot analytics metrics...</div>
+
+  </main>
+
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 px-4 py-2 flex justify-around z-50 max-w-lg mx-auto rounded-t-xl shadow-lg">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider py-1 px-3" id="nav-dashboard">
+      <span>Home</span>
+    </button>
+    <button onclick="switchTab('practice')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-practice">
+      <span>Practice</span>
+    </button>
+    <button onclick="switchTab('vaults')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-vaults">
+      <span>Vaults</span>
+    </button>
+    <button onclick="switchTab('leaderboard')" class="flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3" id="nav-leaderboard">
+      <span>Ranks</span>
+    </button>
+  </nav>
+
+  <script>
+    // 1. SUPABASE CREDENTIALS DIRECT HARDCODE TO PREVENT BROWSER ERRORS
+    const SUPABASE_URL = "https://egudrydhuaibeaocajdt.supabase.co"; 
+    const SUPABASE_ANON_KEY = "sb_publishable_vFnnyzNaeKo-dgHzA9hZlw_yB4tw9R9";
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. STATE MANAGER Variables
+    let tgUser = { id: "777777777", first_name: "Guest Aspirant" }; // fallback data
+    let currentQuestionsPool = [];
+    let activeQuestionIdx = 0;
+    let selectedCell = null;
+    let hasAnsweredQ = false;
+
+    // Initialize Telegram SDK
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      if (tg.initDataUnsafe?.user) {
+        tgUser = tg.initDataUnsafe.user;
+      }
+    }
+
+    // Render PYQ Years Grid UI Parity
+    const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016];
+    const gridContainer = document.getElementById('pyq-years-grid');
+    pyqYears.forEach(year => {
+      const btn = document.createElement('button');
+      btn.className = "bg-gray-50 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-gray-700 font-mono font-bold py-2 text-xs rounded-xl border border-gray-200 transition";
+      btn.innerText = year;
+      btn.onclick = () => loadPYQPaper(year);
+      gridContainer.appendChild(btn);
+    });
+
+    // 3. SECURE PROFILE SYNC LOOP WITH LIVE BOT TABLES
+    async function syncEcosystemProfile() {
+      const userId = String(tgUser.id);
+      document.getElementById('tg-id').innerText = `ID: ${userId}`;
+      document.getElementById('user-name').innerText = tgUser.first_name;
+      document.getElementById('avatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
+
+      try {
+        // Fetch User Plan from table 'users'
+        let { data: userRow } = await supabaseClient.from('users').select('*').eq('user_id', userId).single();
+        if (userRow) {
+          document.getElementById('plan-badge').innerText = userRow.status.toUpperCase();
+          if(userRow.status === 'premium') {
+            document.getElementById('plan-badge').className = "bg-amber-100 border border-amber-300 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider";
+          }
+        }
+
+        // Fetch metrics stats from table 'stats'
+        let { data: statsRow } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
+        if (statsRow) {
+          document.getElementById('score-display').innerText = statsRow.total_score;
+          document.getElementById('streak-display').innerText = `${statsRow.total_attempted > 0 ? 'Active' : '1'} Days 🔥`;
+          
+          // Fallback target display logic matching user dashboard metrics
+          let done = statsRow.total_attempted % 10; 
+          document.getElementById('target-count').innerText = `${done}/10`;
+          document.getElementById('target-progress').style.width = `${(done / 10) * 100}%`;
+        }
+      } catch (err) {
+        console.error("Profile parity sync pipeline error:", err);
+      }
+    }
+
+    // 4. LOAD PYQ PAPERS DIRECT FROM LIVE 'QUESTIONS' TABLE
+    async function loadPYQPaper(year) {
+      // Query table 'questions' filtering by condition
+      const { data, error } = await supabaseClient
+        .from('questions')
+        .select('*');
+
+      if (error || !data) {
+        alert("Failed to load records from Supabase setup string.");
+        return;
+      }
+
+      // Filter year parity matching bot metadata rows
+      let filtered = data.filter(q => q.question.includes(String(year)));
+      if (filtered.length === 0) {
+        alert(`No items found for NEET ${year} in database yet.`);
+        return;
+      }
+
+      currentQuestionsPool = filtered;
+      activeQuestionIdx = 0;
+      
+      // Toggle views instantly
+      document.getElementById('tab-dashboard').classList.add('hidden');
+      document.getElementById('quiz-container').classList.remove('hidden');
+      
+      renderActiveOMRCard();
+    }
+
+    // 5. NEET OMR SIMULATOR CARD GENERATION Engine
+    function renderActiveOMRCard() {
+      if (activeQuestionIdx >= currentQuestionsPool.length) {
+        alert("🏁 Test Session Completed! Your records are securely updated in the sync pipeline.");
+        quitQuiz();
+        return;
+      }
+
+      hasAnsweredQ = false;
+      document.getElementById('explanation-drawer').classList.add('hidden');
+      
+      const q = currentQuestionsPool[activeQuestionIdx];
+      document.getElementById('quiz-meta').innerText = `Q: ${activeQuestionIdx + 1}/${currentQuestionsPool.length}`;
+      document.getElementById('quiz-subject').innerText = q.subject.toUpperCase();
+      document.getElementById('question-text').innerText = q.question;
+
+      // Map options mapping table indices arrays
+      const optionsArray = [
+        { key: 'A', text: q.opt1 },
+        { key: 'B', text: q.opt2 },
+        { key: 'C', text: q.opt3 },
+        { key: 'D', text: q.opt4 }
+      ];
+
+      const optionsBlock = document.getElementById('options-block');
+      optionsBlock.innerHTML = '';
+
+      optionsArray.forEach(opt => {
+        if (!opt.text) return;
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3.5 rounded-xl border border-gray-200 bg-gray-50 text-xs transition duration-150 flex items-start space-x-3";
+        btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-white border border-gray-300 shadow-sm flex items-center justify-center font-bold text-[11px]">${opt.key}</span><span class="pt-0.5">${opt.text}</span>`;
+        btn.onclick = () => logOMRSelection(btn, opt.key, q.correct, q.explanation, q.id);
+        optionsBlock.appendChild(btn);
+      });
+    }
+
+    // 6. LOG ANSWERS +4 / -1 MARKS LIVE TRACKING UPDATE MUTATION
+    async function logOMRSelection(element, selectedLetter, correctIndex, explanation, questionId) {
+      if (hasAnsweredQ) return;
+      hasAnsweredQ = true;
+
+      // Translate 1-based index table scheme to standard letters mapping
+      const indexMap = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
+      const correctLetter = indexMap[correctIndex] || 'A';
+      const isCorrect = (selectedLetter === correctLetter);
+      const scoreDelta = isCorrect ? 4 : -1;
+
+      // Color scheme updates matching CBT specs
+      const optionsButtons = document.getElementById('options-block').children;
+      for (let btn of optionsButtons) {
+        btn.disabled = true;
+        // Highlight correct green cell status
+        if (btn.innerText.startsWith(correctLetter)) {
+          btn.className = "w-full text-left p-3.5 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-700 font-medium ring-2 ring-emerald-500/10 text-xs flex items-start space-x-3";
+          btn.querySelector('span').className = "w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-[11px]";
+        } 
+        // Highlight wrong red cell status if mismatched
+        else if (btn === element && !isCorrect) {
+          btn.className = "w-full text-left p-3.5 rounded-xl border border-red-500 bg-red-50 text-red-700 font-medium ring-2 ring-red-500/10 text-xs flex items-start space-x-3";
+          btn.querySelector('span').className = "w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-[11px]";
+        } else {
+          btn.className = "w-full text-left p-3.5 rounded-xl border border-gray-200 bg-gray-50 opacity-50 text-gray-400 text-xs flex items-start space-x-3";
+        }
+      }
+
+      // Mutate scores directly in table 'stats' to sync back to bot profile live counters
+      const userId = String(tgUser.id);
+      try {
+        // Log to user_history matching sync specs
+        await supabaseClient.from('user_history').insert({
+          user_id: parseInt(userId),
+          question_id: questionId,
+          is_correct: isCorrect ? 1 : 0,
+          answered: 1
+        });
+
+        // Pull active standings to apply mathematical increment rules safely
+        let { data: activeStats } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
+        if(activeStats) {
+          await supabaseClient.from('stats').update({
+            total_score: Math.max(0, activeStats.total_score + scoreDelta),
+            total_attempted: activeStats.total_attempted + 1
+          }).eq('user_id', userId);
+        }
+      } catch(ex) {
+        console.error("Database status sync failure logic trace:", ex);
+      }
+
+      // Display Solution Explanation Box Drawer Panel inline frames
+      const badge = document.getElementById('verdict-badge');
+      badge.innerText = isCorrect ? "Correct (+4)" : "Incorrect (-1)";
+      badge.className = isCorrect ? "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-emerald-100 text-emerald-800 border border-emerald-200" : "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-red-100 text-red-800 border border-red-200";
+      
+      document.getElementById('explanation-text').innerText = explanation || "No standard book solution logging registered.";
+      document.getElementById('explanation-drawer').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      activeQuestionIdx++;
+      renderActiveOMRCard();
+    }
+
+    function quitQuiz() {
+      document.getElementById('quiz-container').classList.add('hidden');
+      document.getElementById('tab-dashboard').classList.remove('hidden');
+      syncEcosystemProfile(); // reload profile variables counters instantly
+    }
+
+    // 7. MULTI-TAB CONTROLLER NAVIGATION SWITCHES
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'practice', 'vaults', 'leaderboard'];
+      tabs.forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`nav-${t}`).className = "flex flex-col items-center space-y-1 text-gray-400 text-[10px] uppercase tracking-wider py-1 px-3";
+      });
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider py-1 px-3";
+    }
+
+    // Auto load metrics profile on active window mounts loop triggers
+    syncEcosystemProfile();
+  </script>
+</body>
+</html>
+
