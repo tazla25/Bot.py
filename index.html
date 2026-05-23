@@ -321,7 +321,7 @@
 
       const { data, error } = await supabaseClient
         .from('questions')
-        .select('chapter')
+        .select('topic')
         .eq('subject', selectedPracticeSubject);
 
       if (error || !data) {
@@ -356,7 +356,7 @@
         .from('questions')
         .select('*')
         .eq('subject', subject)
-        .eq('chapter', chapter)
+        .eq('topic', chapter)
         .limit(10);
 
       if (error || !data || data.length === 0) {
