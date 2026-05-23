@@ -37,7 +37,7 @@ ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 DATABASE_URL = os.getenv("DATABASE_URL") # Supabase Connection String
 FREE_DAILY_LIMIT = 3
 DAILY_TARGET = 10
-PREMIUM_GROUP_LINK = os.getenv("PREMIUM_GROUP_LINK", "https://t.me/your_premium_group")
+PREMIUM_GROUP_LINK = os.getenv("PREMIUM_GROUP_LINK", "https://t.me/+fRTOlcBm97U1MjFl")
 
 # Streak milestones that trigger a congratulation message
 STREAK_MILESTONES = {
@@ -761,7 +761,7 @@ async def handle_menu_clicks(update: Update, context: ContextTypes.DEFAULT_TYPE)
             else:
                 text = (
                     f"💎 **UPGRADE TO PREMIUM**\n\n• Unlimited questions daily\n• Chapter-wise topic drills\n• Full analytics\n\n"
-                    f"💳 **Price:** ₹49 / month\n👉 **UPI:** `kaxxx@jio`\n\nSend payment screenshot here."
+                    f"💳 **Price:** ₹49 / month\n👉 **UPI:** `karan87@jio`\n\nSend payment screenshot here."
                 )
             await context.bot.send_message(chat_id=user_id, text=text, parse_mode="Markdown", reply_markup=get_main_menu_keyboard())
             return
