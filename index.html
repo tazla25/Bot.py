@@ -79,7 +79,6 @@
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
         <div class="flex items-center justify-between border-b border-gray-150 pb-2">
           <span id="quiz-subject" class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">Biology</span>
-          <span id="quiz-year-tag" class="hidden bg-red-500 text-white font-mono font-bold text-[9px] px-2 py-0.5 rounded-full">PYQ</span>
         </div>
         <p id="question-text" class="text-sm font-medium text-gray-900 leading-relaxed">Loading question text...</p>
         
@@ -101,7 +100,21 @@
 
     <div id="tab-practice" class="hidden p-4 text-center text-gray-400 text-xs">Syllabus chapter integration loading from active cloud db...</div>
     <div id="tab-vaults" class="hidden p-4 text-center text-gray-400 text-xs">Mistake Vault & Saved Bookmarks loading dynamically...</div>
-    <div id="tab-leaderboard" class="hidden p-4 text-center text-gray-400 text-xs">Standings grid updates live via bot analytics metrics...</div>
+    
+    <div id="tab-leaderboard" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+        <div class="flex items-center space-x-3 border-b border-gray-100 pb-3 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 font-bold">🏆</div>
+          <div>
+            <h4 class="font-semibold text-xs text-gray-900 leading-tight">Global Live Leaderboard</h4>
+            <p class="text-[10px] text-gray-400">Top 10 aspirants ranked by unified cloud ecosystem scores.</p>
+          </div>
+        </div>
+        
+        <div class="space-y-2" id="leaderboard-list">
+          </div>
+      </div>
+    </div>
 
   </main>
 
@@ -121,17 +134,16 @@
   </nav>
 
   <script>
-    // 1. SUPABASE CREDENTIALS DIRECT HARDCODE TO PREVENT BROWSER ERRORS
+    // 1. SUPABASE CREDENTIALS DIRECT HARDCODE
     const SUPABASE_URL = "https://egudrydhuaibeaocajdt.supabase.co"; 
     const SUPABASE_ANON_KEY = "sb_publishable_vFnnyzNaeKo-dgHzA9hZlw_yB4tw9R9";
     
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // 2. STATE MANAGER Variables
-    let tgUser = { id: "777777777", first_name: "Guest Aspirant" }; // fallback data
+    let tgUser = { id: "777777777", first_name: "Guest Aspirant" }; 
     let currentQuestionsPool = [];
     let activeQuestionIdx = 0;
-    let selectedCell = null;
     let hasAnsweredQ = false;
 
     // Initialize Telegram SDK
@@ -144,7 +156,7 @@
       }
     }
 
-    // Render PYQ Years Grid UI Parity
+    // Render PYQ Years Grid UI
     const pyqYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016];
     const gridContainer = document.getElementById('pyq-years-grid');
     pyqYears.forEach(year => {
@@ -163,7 +175,6 @@
       document.getElementById('avatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
 
       try {
-        // Fetch User Plan from table 'users'
         let { data: userRow } = await supabaseClient.from('users').select('*').eq('user_id', userId).single();
         if (userRow) {
           document.getElementById('plan-badge').innerText = userRow.status.toUpperCase();
@@ -172,13 +183,11 @@
           }
         }
 
-        // Fetch metrics stats from table 'stats'
         let { data: statsRow } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
         if (statsRow) {
           document.getElementById('score-display').innerText = statsRow.total_score;
           document.getElementById('streak-display').innerText = `${statsRow.total_attempted > 0 ? 'Active' : '1'} Days 🔥`;
           
-          // Fallback target display logic matching user dashboard metrics
           let done = statsRow.total_attempted % 10; 
           document.getElementById('target-count').innerText = `${done}/10`;
           document.getElementById('target-progress').style.width = `${(done / 10) * 100}%`;
@@ -190,17 +199,12 @@
 
     // 4. LOAD PYQ PAPERS DIRECT FROM LIVE 'QUESTIONS' TABLE
     async function loadPYQPaper(year) {
-      // Query table 'questions' filtering by condition
-      const { data, error } = await supabaseClient
-        .from('questions')
-        .select('*');
-
+      const { data, error } = await supabaseClient.from('questions').select('*');
       if (error || !data) {
         alert("Failed to load records from Supabase setup string.");
         return;
       }
 
-      // Filter year parity matching bot metadata rows
       let filtered = data.filter(q => q.question.includes(String(year)));
       if (filtered.length === 0) {
         alert(`No items found for NEET ${year} in database yet.`);
@@ -210,17 +214,15 @@
       currentQuestionsPool = filtered;
       activeQuestionIdx = 0;
       
-      // Toggle views instantly
       document.getElementById('tab-dashboard').classList.add('hidden');
       document.getElementById('quiz-container').classList.remove('hidden');
-      
       renderActiveOMRCard();
     }
 
     // 5. NEET OMR SIMULATOR CARD GENERATION Engine
     function renderActiveOMRCard() {
       if (activeQuestionIdx >= currentQuestionsPool.length) {
-        alert("🏁 Test Session Completed! Your records are securely updated in the sync pipeline.");
+        alert("🏁 Test Session Completed!");
         quitQuiz();
         return;
       }
@@ -233,7 +235,6 @@
       document.getElementById('quiz-subject').innerText = q.subject.toUpperCase();
       document.getElementById('question-text').innerText = q.question;
 
-      // Map options mapping table indices arrays
       const optionsArray = [
         { key: 'A', text: q.opt1 },
         { key: 'B', text: q.opt2 },
@@ -254,28 +255,23 @@
       });
     }
 
-    // 6. LOG ANSWERS +4 / -1 MARKS LIVE TRACKING UPDATE MUTATION
+    // 6. LOG ANSWERS +4 / -1 MARKS LIVE TRACKING UPDATE
     async function logOMRSelection(element, selectedLetter, correctIndex, explanation, questionId) {
       if (hasAnsweredQ) return;
       hasAnsweredQ = true;
 
-      // Translate 1-based index table scheme to standard letters mapping
       const indexMap = { 1: 'A', 2: 'B', 3: 'C', 4: 'D' };
       const correctLetter = indexMap[correctIndex] || 'A';
       const isCorrect = (selectedLetter === correctLetter);
       const scoreDelta = isCorrect ? 4 : -1;
 
-      // Color scheme updates matching CBT specs
       const optionsButtons = document.getElementById('options-block').children;
       for (let btn of optionsButtons) {
         btn.disabled = true;
-        // Highlight correct green cell status
         if (btn.innerText.startsWith(correctLetter)) {
           btn.className = "w-full text-left p-3.5 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-700 font-medium ring-2 ring-emerald-500/10 text-xs flex items-start space-x-3";
           btn.querySelector('span').className = "w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-[11px]";
-        } 
-        // Highlight wrong red cell status if mismatched
-        else if (btn === element && !isCorrect) {
+        } else if (btn === element && !isCorrect) {
           btn.className = "w-full text-left p-3.5 rounded-xl border border-red-500 bg-red-50 text-red-700 font-medium ring-2 ring-red-500/10 text-xs flex items-start space-x-3";
           btn.querySelector('span').className = "w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-[11px]";
         } else {
@@ -283,10 +279,8 @@
         }
       }
 
-      // Mutate scores directly in table 'stats' to sync back to bot profile live counters
       const userId = String(tgUser.id);
       try {
-        // Log to user_history matching sync specs
         await supabaseClient.from('user_history').insert({
           user_id: parseInt(userId),
           question_id: questionId,
@@ -294,7 +288,6 @@
           answered: 1
         });
 
-        // Pull active standings to apply mathematical increment rules safely
         let { data: activeStats } = await supabaseClient.from('stats').select('*').eq('user_id', userId).single();
         if(activeStats) {
           await supabaseClient.from('stats').update({
@@ -303,15 +296,14 @@
           }).eq('user_id', userId);
         }
       } catch(ex) {
-        console.error("Database status sync failure logic trace:", ex);
+        console.error("Database status sync failure:", ex);
       }
 
-      // Display Solution Explanation Box Drawer Panel inline frames
       const badge = document.getElementById('verdict-badge');
       badge.innerText = isCorrect ? "Correct (+4)" : "Incorrect (-1)";
       badge.className = isCorrect ? "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-emerald-100 text-emerald-800 border border-emerald-200" : "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full uppercase bg-red-100 text-red-800 border border-red-200";
       
-      document.getElementById('explanation-text').innerText = explanation || "No standard book solution logging registered.";
+      document.getElementById('explanation-text').innerText = explanation || "No explanation registered.";
       document.getElementById('explanation-drawer').classList.remove('hidden');
     }
 
@@ -323,10 +315,58 @@
     function quitQuiz() {
       document.getElementById('quiz-container').classList.add('hidden');
       document.getElementById('tab-dashboard').classList.remove('hidden');
-      syncEcosystemProfile(); // reload profile variables counters instantly
+      syncEcosystemProfile(); 
     }
 
-    // 7. MULTI-TAB CONTROLLER NAVIGATION SWITCHES
+    // 7. FETCH LIVE LEADERBOARD STANDINGS FROM CLOUD
+    async function loadLeaderboard() {
+      const listContainer = document.getElementById('leaderboard-list');
+      listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-4">Syncing live standings...</p>';
+      
+      try {
+        // Query top 10 rows from stats ordered by total_score descending
+        const { data, error } = await supabaseClient
+          .from('stats')
+          .select('user_id, total_score')
+          .order('total_score', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        listContainer.innerHTML = '';
+        if (!data || data.length === 0) {
+          listContainer.innerHTML = '<p class="text-center text-gray-400 text-xs py-4">No points logged yet.</p>';
+          return;
+        }
+
+        data.forEach((row, index) => {
+          const rank = index + 1;
+          let badgeClass = "bg-gray-100 text-gray-700";
+          let rankIcon = rank;
+          
+          // Premium medals formatting for top 3 positions
+          if (rank === 1) { rankIcon = "🥇"; badgeClass = "bg-amber-50 text-amber-700 border border-amber-200"; }
+          else if (rank === 2) { rankIcon = "🥈"; badgeClass = "bg-slate-50 text-slate-700 border border-slate-200"; }
+          else if (rank === 3) { rankIcon = "🥉"; badgeClass = "bg-orange-50 text-orange-700 border border-orange-200"; }
+          
+          const rowElement = document.createElement('div');
+          rowElement.className = "flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-150 transition";
+          rowElement.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[11px] ${badgeClass}">${rankIcon}</span>
+              <span class="text-xs font-medium text-gray-800 font-mono">User_${String(row.user_id).slice(-4)}</span>
+            </div>
+            <span class="text-xs font-mono font-bold text-emerald-600">${row.total_score} Pts</span>
+          `;
+          listContainer.appendChild(rowElement);
+        });
+      } catch (err) {
+        console.error("Leaderboard query failure:", err);
+        listContainer.innerHTML = '<p class="text-center text-red-500 text-xs py-4">Failed to fetch cloud standings.</p>';
+      }
+    }
+
+    // 8. MULTI-TAB CONTROLLER NAVIGATION
     function switchTab(tabId) {
       const tabs = ['dashboard', 'practice', 'vaults', 'leaderboard'];
       tabs.forEach(t => {
@@ -335,9 +375,14 @@
       });
       document.getElementById(`tab-${tabId}`).classList.remove('hidden');
       document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center space-y-1 text-emerald-600 font-bold text-[10px] uppercase tracking-wider py-1 px-3";
+      
+      // Auto fetch ranks whenever active tabs hits leaderboard views
+      if (tabId === 'leaderboard') {
+        loadLeaderboard();
+      }
     }
 
-    // Auto load metrics profile on active window mounts loop triggers
+    // Auto load metrics profile on start
     syncEcosystemProfile();
   </script>
 </body>
