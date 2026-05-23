@@ -1,6 +1,7 @@
 import logging
 import psycopg2
 from psycopg2.extras import execute_values
+from psycopg2.pool import ThreadedConnectionPool  # Active pooling engine
 import random
 import json
 import time
@@ -50,11 +51,55 @@ STREAK_MILESTONES = {
 
 
 # ─────────────────────────────────────────────
-# DATABASE ENGINE (SUPABASE POSTGRESQL)
+# DATABASE POOL ENGINE & PROXY MECHANISM
 # ─────────────────────────────────────────────
 
+try:
+    # Initializes 15 temporary connections kept active in memory
+    db_pool = ThreadedConnectionPool(
+        minconn=2,
+        maxconn=15,
+        dsn=DATABASE_URL
+    )
+    logging.info("Database connection pool initialized successfully.")
+except Exception as e:
+    logging.error(f"Failed to initialize connection pool: {e}")
+    db_pool = None
+
+
+class ConnectionProxy:
+    """
+    Intercepts the traditional conn.close() calls from the old architecture
+    and recycles the connection back to the active thread pool.
+    """
+    def __init__(self, conn, pool):
+        self._conn = conn
+        self._pool = pool
+
+    def cursor(self, *args, **kwargs):
+        return self._conn.cursor(*args, **kwargs)
+
+    def commit(self):
+        return self._conn.commit()
+
+    def rollback(self):
+        return self._conn.rollback()
+
+    def close(self):
+        if self._pool and self._conn:
+            self._pool.putconn(self._conn)  # Returned cleanly to the pool
+            self._conn = None
+        elif self._conn:
+            self._conn.close()
+            self._conn = None
+
+    def __getattr__(self, name):
+        return getattr(self._conn, name)
+
+
 def get_conn():
-    # Connects directly to your free Supabase cloud instance
+    if db_pool:
+        return ConnectionProxy(db_pool.getconn(), db_pool)
     return psycopg2.connect(DATABASE_URL)
 
 
@@ -62,7 +107,6 @@ def init_db():
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        # Using BIGINT for Telegram IDs to avoid 32-bit integer overflow issues
         cursor.execute("""CREATE TABLE IF NOT EXISTS users (
             user_id                 BIGINT PRIMARY KEY,
             status                  TEXT    DEFAULT 'free',
@@ -127,7 +171,6 @@ def init_db():
 
         conn.commit()
 
-        # Safe column migrations for existing deployments
         migrations = [
             "ALTER TABLE users ADD COLUMN last_milestone_notified INTEGER DEFAULT 0",
             "ALTER TABLE users ADD COLUMN referral_count INTEGER DEFAULT 0",
@@ -137,9 +180,8 @@ def init_db():
                 cursor.execute(sql)
                 conn.commit()
             except Exception:
-                conn.rollback()  # Column already exists in Postgres — safe to ignore
+                conn.rollback()
 
-        # Seed initial data parameters from questions.json if database is fresh
         cursor.execute("SELECT COUNT(*) FROM questions")
         if cursor.fetchone()[0] == 0:
             try:
@@ -172,11 +214,6 @@ def make_bar(pct, width=10):
 
 
 def get_user_status(user_id, name="User"):
-    """
-    Returns (status, count_today, expiry_date, streak, milestone_reached).
-    milestone_reached is the streak integer if a new milestone was hit today, else None.
-    Also resets daily count and updates streak on new day.
-    """
     conn = get_conn()
     cursor = conn.cursor()
     try:
@@ -216,7 +253,6 @@ def get_user_status(user_id, name="User"):
             )
             conn.commit()
 
-        # Check if current streak crossed a new milestone that hasn't been notified yet
         achieved = [m for m in STREAK_MILESTONES if new_streak >= m and m > last_notified]
         if achieved:
             top_milestone = max(achieved)
@@ -377,7 +413,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("awaiting_topic", None)
     context.user_data.pop("awaiting_support_msg", None)
 
-    # Send streak milestone congratulation if user just crossed one today
     if milestone and milestone in STREAK_MILESTONES:
         icon, title, body = STREAK_MILESTONES[milestone]
         await update.message.reply_text(
@@ -807,8 +842,6 @@ async def handle_text_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        # ── Session Continuity Guard ─────────────────────────────────────────
-        # If the user has an active session, warn before overwriting it.
         cursor.execute(
             "SELECT current_index, question_ids FROM user_sessions WHERE user_id = %s",
             (user_id,)
@@ -818,7 +851,6 @@ async def handle_text_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
             curr_idx, ids_str_active = active
             total = len(ids_str_active.split(","))
             if curr_idx < total:
-                # Build the pending session params so restart_session can use them
                 if mode in ["physics", "chemistry", "biology"]:
                     if topic == "all":
                         cursor.execute(
@@ -868,7 +900,6 @@ async def handle_text_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     ])
                 )
                 return
-        # ─────────────────────────────────────────────────────────────────────
 
         if mode in ["physics", "chemistry", "biology"]:
             if topic == "all":
@@ -1004,8 +1035,7 @@ async def send_next_session_question(context, user_id):
         cursor.execute("INSERT INTO user_history (user_id, question_id, is_correct, answered) VALUES (%s, %s, 0, 0) ON CONFLICT DO NOTHING", (user_id, target_q_id))
         conn.commit()
 
-        # Daily goal celebration — fires exactly once when the count crosses the target
-        cursor.execute("SELECT count_today FROM users WHERE user_id = %s", (user_id,))
+        状况_count = updated_count = cursor.execute("SELECT count_today FROM users WHERE user_id = %s", (user_id,))
         updated_count = cursor.fetchone()[0]
         if updated_count == DAILY_TARGET:
             await context.bot.send_message(
@@ -1256,9 +1286,8 @@ async def check_expiry(context: ContextTypes.DEFAULT_TYPE):
 
 
 async def my_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Gives the user their personal referral link."""
     user = update.effective_user
-    get_user_status(user.id, user.full_name)  # Ensure user row exists
+    get_user_status(user.id, user.full_name)
 
     bot_info = await context.bot.get_me()
     ref_link = f"https://t.me/{bot_info.username}?start=ref_{user.id}"
@@ -1282,7 +1311,6 @@ async def my_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def user_rank(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Shows the user their global leaderboard rank."""
     user_id = update.effective_user.id
     get_user_status(user_id, update.effective_user.full_name)
 
@@ -1329,7 +1357,6 @@ async def user_rank(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def extend_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Admin command: /extend <user_id> <days> — adds days to existing expiry without reset."""
     if update.effective_user.id != ADMIN_ID:
         return
     if len(context.args) < 2:
@@ -1427,5 +1454,5 @@ if __name__ == "__main__":
 
     app.job_queue.run_daily(check_expiry, time=dt_time(0, 0))
 
-    print("NEET Bot v5.0 (Supabase Backend) running...")
+    print("NEET Bot v5.0 (Supabase Backend with Active Pooling) running...")
     app.run_polling()
